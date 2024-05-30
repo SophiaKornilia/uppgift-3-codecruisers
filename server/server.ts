@@ -17,7 +17,7 @@ app.get("/", async (req, res) => {
     port: 3306,
     user: "root",
     password: "notSecureChangeMe",
-    database: "test",
+    database: "CodeCruisersWebShop",
   });
 
   const [results, fields] = await db.query("SELECT * FROM `pages`");
