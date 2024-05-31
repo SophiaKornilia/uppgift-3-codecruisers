@@ -52,6 +52,13 @@ export const Navigation = () => {
             <button>Register</button>
           </NavLink>
         </li>
+        <li>
+          <NavLink
+            to="/SuccessfullyRegistered"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );
