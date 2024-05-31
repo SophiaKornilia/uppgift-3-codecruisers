@@ -1,5 +1,9 @@
 import express from "express";
 import mysql from "mysql2/promise";
+import dotenv from 'dotenv';
+import connectToDatabase from "./services/databaseConnection";
+
+dotenv.config();
 
 // type test = {
 //     name: string
@@ -9,20 +13,72 @@ import mysql from "mysql2/promise";
 let app = express();
 const PORT: Number = 3000; //varför number?
 
+if (typeof(process.env.DATABASE_URL) === "string") {
+let url:string = process.env.DATABASE_URL;
+
+let connectToDatabase = (url:string):void => {
+  console.log("connectToDatabase");
+        console.log("url", url);
+}
+
+connectToDatabase(url);
+
+}
+
+
 app.get("/", async (req, res) => {
   res.send("Success");
 
-  let db = await mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "notSecureChangeMe",
-    database: "test",
-  });
-
+  const db = await connectToDatabase();
   const [results, fields] = await db.query("SELECT * FROM `pages`");
-  console.log(results, fields);
+  res.json(results);
 });
+
+// AUTH:
+
+app.post("/login", async (req, res) => {
+
+  // logik för login
+})
+
+app.post("/logout", async (req, res) => {
+  // logik för att logga ut
+})
+
+app.post("/register", async (req, res) => {
+ 
+  // logik för register
+})
+
+// INNEHÅLL:
+
+app.get("/content", async (req, res) => {
+  //logik för att hämta books baserat på vilken sub level man har
+})
+
+app.post("/content", async (req, res) => {
+  // logik för admin att lägga till bok 
+})
+
+// BETALNING:
+
+app.post("/checkout", async (req, res) => {
+  // logik för att betala via stripe
+})
+
+app.post("/checkout/retry", async (req, res) => {
+  // logik för att betala misslyckad betalning
+})
+
+app.post("/subscriptions", async (req, res) => {
+  // logik för att hämta kunder baserat på subscriptions. kan hända att denna är onödig
+})
+
+app.post("/subscriptions/cancel", async (req, res) => {
+  // logik för att avsluta prenumeration
+})
+
+
 
 app.listen(PORT, () => {
   console.log("Started");
