@@ -7,6 +7,7 @@ import { MyPage } from "./pages/MyPage";
 import { MySubscriptions } from "./pages/MySubscriptions";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
+import { SuccessfullyRegistered } from "./pages/SuccessfullyRegistered";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: "/Register",
         element: <Register />,
+      },
+      {
+        path: "/SuccessfullyRegistered",
+        element: <SuccessfullyRegistered />,
       },
     ],
   },
