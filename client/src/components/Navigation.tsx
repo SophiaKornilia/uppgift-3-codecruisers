@@ -1,25 +1,58 @@
-import { NavLink } from "react-router-dom"
-
+import { NavLink } from "react-router-dom";
+import "../style/Navigation.css";
 export const Navigation = () => {
-    return (
-        <nav>
-            <ul>
-                <li>
-                    <NavLink to="/">
-                        <button>Home</button>
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to="/Admin">
-                        <button>Admin</button>
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to="/">
-                        <button>Home</button>
-                    </NavLink>
-                </li>
-            </ul>
-        </nav>
-    )
-}
+  return (
+    <nav>
+      <ul>
+        <li>
+          <NavLink
+            to="/"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <button>Home</button>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/Admin"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <button>Admin</button>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/MyPage"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <button>My Page</button>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/MySubscriptions"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <button>My Subscriptions</button>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/Login"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <button>Login</button>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/Register"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <button>Register</button>
+          </NavLink>
+        </li>
+      </ul>
+    </nav>
+  );
+};
