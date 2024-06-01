@@ -1,16 +1,16 @@
 import connectToDatabase from "../../services/databaseConnection";
+import { Request, Response } from "express";
 
-
-export const register = async (req, res) => {
+export const registerUser = async (req: Request, res: Response): Promise<void> => {
     const db = await connectToDatabase();
   // Registreringslogik
 }
 
-export const login = async (req, res) => {
+export const loginUser = async (req: Request, res: Response): Promise<void> => {
     const db = await connectToDatabase();
   // Inloggningslogik
 }
 
-export const logout = (req, res) => {
+export const logoutUser = (req: Request, res: Response) => {
     // Utloggningslogik - behöver denna vara async?
 }
