@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 export const Register = () => {
-  const url = "../../register.json";
-  const successUrl = "SuccessfullyRegistered";
+  const url = "http://localhost:3000/register";
+  const successUrl = "http://localhost:5173/SuccessfullyRegistered";
 
   const [firstName, setFirstName] = useState<string>();
   const [lastName, setLastName] = useState<string>();
@@ -32,19 +32,17 @@ export const Register = () => {
   };
 
   const handleRegister = async () => {
-    if (
-      firstName === "" ||
-      lastName === "" ||
-      email === "" ||
-      address === "" ||
-      password === ""
-    ) {
+    if (!firstName || !lastName || !email || !address || !password) {
       console.log("You must fill in all the inputs");
       alert("Please fill in all required fields before registering");
+      return;
     }
     try {
       const response = await fetch(url, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           firstName: firstName,
           lastName: lastName,
@@ -62,6 +60,9 @@ export const Register = () => {
       console.log("Something went wrong, error");
     }
   };
+
+  console.log(firstName);
+
   return (
     <div className="container">
       <div className="form-container">

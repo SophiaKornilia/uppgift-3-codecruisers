@@ -3,7 +3,7 @@ import "../style/Login.css";
 import { useState } from "react";
 
 export const Login = () => {
-  const url = "../../login.json"; //KATODO: change to live backend
+  const url = "http://localhost:3000/Login"; //KATODO: change to live backend
   const successUrl = "MyPage";
 
   const [email, setEmail] = useState<string>("");
@@ -21,6 +21,9 @@ export const Login = () => {
     try {
       const result = await fetch(url, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           email: email,
           password: password,

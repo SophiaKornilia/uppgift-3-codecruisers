@@ -7,7 +7,7 @@ export const SuccessfullyRegistered = () => {
   useEffect(() => {
     setTimeout(() => {
       navigate("Login");
-    }, 5000);
+    }, 3000);
   });
   return (
     <div>
