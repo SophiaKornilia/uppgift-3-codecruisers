@@ -3,7 +3,9 @@ import "../style/Login.css";
 import { useState } from "react";
 
 export const Login = () => {
-  const url = "http://localhost:3000/Login"; //KATODO: change to live backend
+  //KATODO: behöver lägga till om emailen inte finns i databasen behöver användaren veta det och få förslag om att registrera sig istället
+  
+  const url = "http://localhost:3000/Login";
   const successUrl = "MyPage";
 
   const [email, setEmail] = useState<string>("");

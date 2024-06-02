@@ -83,7 +83,7 @@ app.post("/login", async (req, res) => {
 
 app.post("/logout", async (req, res) => {
   // logik för att logga ut
-
+  return res.status(200).json({ isLoggedIn: false });
 });
 
 app.post("/register", async (req, res) => {
