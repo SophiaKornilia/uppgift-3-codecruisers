@@ -13,7 +13,7 @@ dotenv.config();
 // }
 
 let app = express();
-const PORT: Number = 3000; 
+const PORT: Number = 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -43,7 +43,7 @@ app.post("/login", async (req, res) => {
   // logik för login
 
   let { email, password } = req.body;
-  console.log(email, password);
+  console.log("email and password", email, password);
 
   try {
     const connection = await mysql.createConnection({
@@ -54,10 +54,26 @@ app.post("/login", async (req, res) => {
     });
 
     //kolla i databasen om det finns någon mail som matchar
-    const result = await connection.query(
+    const [rows]: [mysql.RowDataPacket[], any] = await connection.query(
       "SELECT * FROM users WHERE email = ?",
       [email]
     );
+
+    if (Array.isArray(rows) && rows.length > 0) {
+      const user = rows[0];
+      console.log("Email är", user.email, "Lösenordet är", user.password);
+
+      //jämför lösenorde med det haschade lösenordet i db.
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (!passwordMatch) {
+        return res.status(400).json("Wrong user or password");
+      } else {
+        return res.status(200).json({ isLoggedIn: true });
+      }
+    } else {
+      console.log("no email in the db");
+    }
   } catch (error) {
     console.error("Error", error);
   }
@@ -67,6 +83,7 @@ app.post("/login", async (req, res) => {
 
 app.post("/logout", async (req, res) => {
   // logik för att logga ut
+
 });
 
 app.post("/register", async (req, res) => {

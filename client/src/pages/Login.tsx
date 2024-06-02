@@ -31,7 +31,7 @@ export const Login = () => {
       });
       const resultData = await result.json();
 
-      if (resultData.loggedIn) {
+      if (resultData.isLoggedIn) {
         document.location.href = successUrl;
         console.log("Signed in");
       } else {
@@ -41,6 +41,7 @@ export const Login = () => {
     } catch (error) {
       alert("Something went wrong!");
     }
+    
   };
 
   return (
