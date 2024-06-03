@@ -1,4 +1,7 @@
-import mysql from "mysql2/promise";
+import mysql, { Connection } from "mysql2/promise";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const dbConfig = {
   host: process.env.DB_HOST,
@@ -9,11 +12,12 @@ const dbConfig = {
 };
 
 
-let db: mysql.Connection;
+let db: Connection;
 
-const connectToDatabase = async () => {
+const connectToDatabase = async (): Promise<Connection> => {
   if (!db) {
     db = await mysql.createConnection(dbConfig);
+    console.log("Connected to the database");
   }
   return db;
 };
