@@ -7,11 +7,6 @@ const bcrypt = require("bcrypt");
 
 dotenv.config();
 
-// type test = {
-//     name: string
-//     id: bigint
-// }
-
 let app = express();
 const PORT: Number = 3000;
 app.use(cors());
@@ -87,9 +82,6 @@ app.post("/logout", async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  console.log("test");
-  console.log(req.body);
-
   let { firstName, lastName, email, address, password } = req.body;
 
   if (!firstName || !lastName || !email || !address || !password) {
@@ -131,6 +123,10 @@ app.post("/register", async (req, res) => {
   // logik för register
 });
 
+app.get("/subscription", async (req, res) => {
+  //logik för att hämta books baserat på vilken sub level man har
+});
+
 // INNEHÅLL:
 
 app.get("/content", async (req, res) => {
@@ -139,6 +135,30 @@ app.get("/content", async (req, res) => {
 
 app.post("/content", async (req, res) => {
   // logik för admin att lägga till bok
+  let { title, author, text, levelId } = req.body;
+
+  if (!title || !author || !text || !levelId) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  console.log(title);
+
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
+
+    await connection.query(
+      "INSERT INTO books (title, author, text, levelId) VALUES (?, ?, ?, ?)",
+      [title, author, text, levelId]
+    );
+  } catch (error) {
+    console.error("Could not register a book", error);
+  }
+  res.status(200).json({ isAdded: true });
 });
 
 // BETALNING:
