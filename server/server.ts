@@ -1,13 +1,17 @@
 import express from "express";
 import mysql from "mysql2/promise";
-import dotenv from "dotenv";
-import connectToDatabase from "./services/databaseConnection";
+import dotenv from "dotenv"
 var cors = require("cors");
 const bcrypt = require("bcrypt");
+import connectToDatabase from "./services/databaseConnection";
+import userRoutes from "./resources/users/users.router";
+import subscriptionRoutes from "./resources/subscriptions/subscriptions.router";
+import contentRoutes from "./resources/content/content.router";
+import paymentRoutes from "./resources/payments/payments.router";
 
-dotenv.config();
 
 let app = express();
+
 const PORT: Number = 3000;
 app.use(cors());
 app.use(express.json());
@@ -23,6 +27,14 @@ if (typeof process.env.DATABASE_URL === "string") {
 
   connectToDatabase(url);
 }
+
+app.use(express.json());
+
+// ROUTES:
+app.use("/api/users", userRoutes);
+app.use("/api/subscriptions", subscriptionRoutes);
+app.use("/api/content", contentRoutes);
+app.use("/api/payments", paymentRoutes);
 
 app.get("/", async (req, res) => {
   res.send("Success");
@@ -123,15 +135,7 @@ app.post("/register", async (req, res) => {
   // logik för register
 });
 
-app.get("/subscription", async (req, res) => {
-  //logik för att hämta books baserat på vilken sub level man har
-});
-
 // INNEHÅLL:
-
-app.get("/content", async (req, res) => {
-  //logik för att hämta books baserat på vilken sub level man har
-});
 
 app.post("/content", async (req, res) => {
   // logik för admin att lägga till bok
@@ -161,23 +165,6 @@ app.post("/content", async (req, res) => {
   res.status(200).json({ isAdded: true });
 });
 
-// BETALNING:
-
-app.post("/checkout", async (req, res) => {
-  // logik för att betala via stripe
-});
-
-app.post("/checkout/retry", async (req, res) => {
-  // logik för att betala misslyckad betalning
-});
-
-app.post("/subscriptions", async (req, res) => {
-  // logik för att hämta kunder baserat på subscriptions. kan hända att denna är onödig
-});
-
-app.post("/subscriptions/cancel", async (req, res) => {
-  // logik för att avsluta prenumeration
-});
 
 app.listen(PORT, () => {
   console.log("Started");
