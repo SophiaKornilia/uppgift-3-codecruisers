@@ -60,6 +60,12 @@ export const Navigation = () => {
             className={({ isActive }) => (isActive ? "active" : "")}
           ></NavLink>
         </li>
+        <li>
+          <NavLink
+            to="/SuccessfullyAddedBook"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          ></NavLink>
+        </li>
       </ul>
     </nav>
   );

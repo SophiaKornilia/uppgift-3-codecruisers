@@ -8,6 +8,7 @@ import { MySubscriptions } from "./pages/MySubscriptions";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { SuccessfullyRegistered } from "./pages/SuccessfullyRegistered";
+import { SuccessfullyAddedBook } from "./pages/SuccessfullyAddedBook";
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ export const router = createBrowserRouter([
       {
         path: "/SuccessfullyRegistered",
         element: <SuccessfullyRegistered />,
+      },
+      {
+        path: "/SuccessfullyAddedBook",
+        element: <SuccessfullyAddedBook />,
       },
     ],
   },

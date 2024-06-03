@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../style/Register.css";
 
 export const Register = () => {
-  const url = "http://localhost:3000/register";
+  const url = "http://localhost:3000/api/users/register";
   const successUrl = "http://localhost:5173/SuccessfullyRegistered";
 
   const [firstName, setFirstName] = useState<string>();

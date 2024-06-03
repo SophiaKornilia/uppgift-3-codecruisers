@@ -4,8 +4,8 @@ import { useState } from "react";
 
 export const Login = () => {
   //KATODO: behöver lägga till om emailen inte finns i databasen behöver användaren veta det och få förslag om att registrera sig istället
-  
-  const url = "http://localhost:3000/Login";
+
+  const url = "http://localhost:3000/api/users/login";
   const successUrl = "MyPage";
 
   const [email, setEmail] = useState<string>("");
@@ -43,7 +43,6 @@ export const Login = () => {
     } catch (error) {
       alert("Something went wrong!");
     }
-    
   };
 
   return (
