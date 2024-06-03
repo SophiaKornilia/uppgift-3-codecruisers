@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import "../style/Navigation.css";
+import { Logout } from "./Logout";
 export const Navigation = () => {
   return (
     <nav>
@@ -42,6 +43,7 @@ export const Navigation = () => {
             className={({ isActive }) => (isActive ? "active" : "")}
           >
             <button>Login</button>
+            <Logout />
           </NavLink>
         </li>
         <li>
@@ -56,8 +58,7 @@ export const Navigation = () => {
           <NavLink
             to="/SuccessfullyRegistered"
             className={({ isActive }) => (isActive ? "active" : "")}
-          >
-          </NavLink>
+          ></NavLink>
         </li>
       </ul>
     </nav>

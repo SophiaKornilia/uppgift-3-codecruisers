@@ -3,7 +3,9 @@ import "../style/Login.css";
 import { useState } from "react";
 
 export const Login = () => {
-  const url = "../../login.json"; //KATODO: change to live backend
+  //KATODO: behöver lägga till om emailen inte finns i databasen behöver användaren veta det och få förslag om att registrera sig istället
+  
+  const url = "http://localhost:3000/Login";
   const successUrl = "MyPage";
 
   const [email, setEmail] = useState<string>("");
@@ -21,6 +23,9 @@ export const Login = () => {
     try {
       const result = await fetch(url, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           email: email,
           password: password,
@@ -28,7 +33,7 @@ export const Login = () => {
       });
       const resultData = await result.json();
 
-      if (resultData.loggedIn) {
+      if (resultData.isLoggedIn) {
         document.location.href = successUrl;
         console.log("Signed in");
       } else {
@@ -38,6 +43,7 @@ export const Login = () => {
     } catch (error) {
       alert("Something went wrong!");
     }
+    
   };
 
   return (
