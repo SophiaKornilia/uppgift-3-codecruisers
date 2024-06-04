@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import "../style/Login.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useUser } from "../context/UserContext";
 
 export const Login = () => {
   //KATODO: behöver lägga till om emailen inte finns i databasen behöver användaren veta det och få förslag om att registrera sig istället
@@ -8,6 +9,7 @@ export const Login = () => {
   const url = "http://localhost:3000/api/users/login";
   const successUrl = "MyPage";
 
+  const { user, setUser } = useUser();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -35,6 +37,7 @@ export const Login = () => {
 
       if (resultData.isLoggedIn) {
         document.location.href = successUrl;
+        setUser(email);
         console.log("Signed in");
       } else {
         alert("Unable to log in!");
@@ -44,6 +47,10 @@ export const Login = () => {
       alert("Something went wrong!");
     }
   };
+
+  useEffect(() => {
+    console.log("Logged in user", user); // Använd useEffect för att lyssna på förändringar i user
+  }, [user]);
 
   return (
     <div className="container">

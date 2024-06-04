@@ -1,6 +1,8 @@
 import { Router } from "express";
-import { getContent, addContent } from "./content.controller";
+import { getContent, addContent, getSubContent } from "./content.controller";
 const router = Router();
+
+router.post("/subBooks", getSubContent);
 
 router.get("/", getContent);
 

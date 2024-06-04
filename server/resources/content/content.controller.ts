@@ -7,9 +7,27 @@ export const getContent = async (
   res: Response
 ): Promise<void> => {
   const db = await connectToDatabase();
-  // Hämta innehåll baserat på prenumerationsnivå
+  // Hämta böcker utanför pernumerationsnivå
 };
 
+export const getSubContent = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  // Hämta innehåll baserat på prenumerationsnivå
+
+  let {loggedInUser} = req.body;
+  console.log(loggedInUser);
+
+  res.status(200).json([
+    {
+      isASubscriber: true,
+      title: "Some Book Title",
+      author: "Some Author",
+      text: "Some text content of the book",
+    },
+  ]);
+};
 export const addContent = async (
   req: Request,
   res: Response

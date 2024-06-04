@@ -31,7 +31,6 @@ export const registerUser = async (
     // if (existingUsers) {
     //   return res.status(400).json({ error: "User already exists, try to log in" });
     // }
-
     //Kryptera lösenordet:
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log(hashedPassword);
@@ -90,4 +89,38 @@ export const logoutUser = (req: Request, res: Response) => {
   // Utloggningslogik - behöver denna vara async?
   // logik för att logga ut
   return res.status(200).json({ isLoggedIn: false });
+};
+
+export const getUser = async (req: Request, res: Response) => {
+  // hämta användarens id för att kolla vilken prenumerationsnivå.
+  let { user } = req.body;
+  console.log("user is", user);
+
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
+    //kolla i databasen om det finns någon mail som matchar och hämta id
+    const [rows]: [mysql.RowDataPacket[], any] = await connection.query(
+      // "SELECT userId FROM users WHERE email = ?",
+      // [user]
+      "SELECT users.userId, subscriptions.* FROM users LEFT JOIN subscriptions ON users.userId = subscriptions.userId WHERE users.email = ?",
+  [user]
+    );
+
+    console.log(user, rows[0].userId);
+  
+    if (rows.length > 0 && rows[0].subscriptionId) {
+      console.log("Användaren har en prenumeration");
+      res.status(200).json({ isASubscriber: true });
+    } else {
+      console.log("Användaren har ingen prenumeration");
+      res.status(400).json({ isASubscriber: false });
+    }
+  } catch (error) {
+    console.error("Error", error);
+  }
 };
