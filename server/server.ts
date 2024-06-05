@@ -2,6 +2,7 @@ import express from "express";
 // import dotenv from "dotenv";
 var cors = require("cors");
 const bcrypt = require("bcrypt");
+const cookieSession = require("cookie-session")
 import mysql from 'mysql2/promise';
 import userRoutes from "./resources/users/users.router";
 import subscriptionRoutes from "./resources/subscriptions/subscriptions.router";
@@ -14,6 +15,13 @@ const PORT: Number = 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieSession({
+    secret: "s3cr3tk3y",
+    maxAge: 1000 * 60 * 60, // 1h
+    httpOnly: true,
+    secure: false, 
+    sameSite: "lax"
+}))
 
 // if (typeof process.env.DATABASE_URL === "string") {
 //   let url: string = process.env.DATABASE_URL;
@@ -40,13 +48,14 @@ app.get("/", async (req, res) => {
     user: "root",
     port: 3307,
     password: "notSecureChangeMe",
-    database: "CodeCruisersWebShop"
+    database: "test"
   });
 
   const [results, fields] = await connection.query(
-    'SELECT * FROM `pages`'
+    'SELECT * FROM `test1`'
   );
   
+  res.json(results);
   res.send("Success");
   // const db = await connectToDatabase();
   // const [results, fields] = await db.query("SELECT * FROM `pages`");
