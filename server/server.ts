@@ -55,7 +55,7 @@ app.get("/", async (req, res) => {
     });
 
     // Hämta data från MySQL-databasen
-    const [results, fields] = await connection.query('SELECT * FROM `test1`');
+    const [results, fields] = await connection.query('SELECT * FROM `subscriptionLevels`');
     
     const stripe = initStripe();
 
