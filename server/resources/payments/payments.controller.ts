@@ -6,9 +6,13 @@ import mysql from "mysql2/promise";
 
 interface SubscriptionLevel extends RowDataPacket {
   price: number;
+  stripePriceId: string;
 }
 
-export const checkout = async (req: Request, res: Response): Promise<void> => {
+export const checkout = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
   const stripe = initStripe();
   if (!stripe) {
     res.status(500).send({ error: "Stripe initialization failed" });
@@ -29,7 +33,7 @@ export const checkout = async (req: Request, res: Response): Promise<void> => {
 
   // Genomför betalning via Stripe
   const [rows]: [SubscriptionLevel[], any] = await connection.query(
-    "SELECT price FROM subscriptionLevels WHERE levelId = ?",
+    "SELECT price, stripePriceId FROM subscriptionLevels WHERE levelId = ?",
     [subscriptionLevel]
   );
 
@@ -38,26 +42,22 @@ export const checkout = async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  const price = rows[0].price;
+  const { price, stripePriceId } = rows[0];
 
   console.log(price, "kr");
+  console.log("Stripe Product ID: ", stripePriceId);
 
   //länka produkterna i databasen till ett id i stripe 
   try {
     const session = await stripe.checkout.sessions.create({
-    customer: req.session.user.email,
-      line_items: [
-        {
-          price_data: {
-            currency: "sek",
-            product_data: {
-              name: subscriptionLevel,
+        //customer_email: req.session?.user?.email, 
+        payment_method_types: ["card"],
+        line_items: [
+            {
+              price: stripePriceId, // Använd pris-ID
+              quantity: 1,
             },
-            unit_amount: price * 100, // Stripe requires the amount in cents
-          },
-          quantity: 1,
-        },
-      ],
+          ],
       mode: "payment",
       success_url: "http://localhost:5173/Confirmation",
       cancel_url: `http://localhost:5173/cancel`,
