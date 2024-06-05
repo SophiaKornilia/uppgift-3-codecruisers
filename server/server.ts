@@ -8,6 +8,8 @@ import userRoutes from "./resources/users/users.router";
 import subscriptionRoutes from "./resources/subscriptions/subscriptions.router";
 import contentRoutes from "./resources/content/content.router";
 import paymentRoutes from "./resources/payments/payments.router";
+import initStripe from "./stripe";
+
 
 let app = express();
 
@@ -43,26 +45,44 @@ app.use("/api/content", contentRoutes);
 app.use("/api/payments", paymentRoutes);
 
 app.get("/", async (req, res) => {
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    port: 3307,
-    password: "notSecureChangeMe",
-    database: "test"
-  });
+  try {
+    const connection = await mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      port: 3307,
+      password: "notSecureChangeMe",
+      database: "codeCruisersWebShop"
+    });
 
-  const [results, fields] = await connection.query(
-    'SELECT * FROM `test1`'
-  );
-  
-  res.json(results);
-  res.send("Success");
-  // const db = await connectToDatabase();
-  // const [results, fields] = await db.query("SELECT * FROM `pages`");
-  // res.json(results);
+    // Hämta data från MySQL-databasen
+    const [results, fields] = await connection.query('SELECT * FROM `test1`');
+    
+    const stripe = initStripe();
+
+    if (!stripe) {
+      throw new Error("Stripe is not initialized");
+    }
+
+    // Hämta produktdata från Stripe
+    const subLevels = await stripe.products.list({
+      expand: ["data.default_price"]
+    });
+
+    // Skicka båda resultaten som ett enda JSON-svar
+    res.status(200).json({
+      databaseResults: results,
+      stripeProducts: subLevels.data
+    });
+
+    // Stäng anslutningen till databasen
+    await connection.end();
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send({ error: "An error occurred" });
+  }
 });
 
-// AUTH:
+
 
 // INNEHÅLL:
 
