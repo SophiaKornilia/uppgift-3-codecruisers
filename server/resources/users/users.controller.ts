@@ -23,9 +23,9 @@ export const registerUser = async (
     const connection = await mysql.createConnection({
       host: "localhost",
       user: "root",
-      port: 3308,
+      port: 3307,
       password: "notSecureChangeMe",
-      database: "CodeCruisersWebShop",
+      database: "codeCruisersWebShop",
     });
     //KATODO: Kolla så användare in finns i db.
     // const existingUsers = await connection.query(
@@ -61,9 +61,9 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     let connection = await mysql.createConnection({
       host: "localhost",
       user: "root",
-      port: 3308,
+      port: 3307,
       password: "notSecureChangeMe",
-      database: "CodeCruisersWebShop",
+      database: "codeCruisersWebShop",
     });
 
     console.log("Connected");
