@@ -1,7 +1,10 @@
-import connectToDatabase from "../../services/databaseConnection";
 import { Request, Response } from "express";
 import mysql from "mysql2/promise";
+import dotenv from "dotenv";
 const bcrypt = require("bcrypt");
+
+dotenv.config();
+
 
 export const registerUser = async (
   req: Request,
@@ -11,16 +14,18 @@ export const registerUser = async (
 
   if (!firstName || !lastName || !email || !address || !password) {
     res.status(400).json({ error: "All fields are required" });
+    return;
   }
 
   console.log(firstName);
 
   try {
     const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      host: "localhost",
+      user: "root",
+      port: 3308,
+      password: "notSecureChangeMe",
+      database: "CodeCruisersWebShop",
     });
     //KATODO: Kolla så användare in finns i db.
     // const existingUsers = await connection.query(
@@ -46,17 +51,29 @@ export const registerUser = async (
   res.status(200).json({ isRegistered: true });
 };
 
+
+
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   let { email, password } = req.body;
   console.log("email and password", email, password);
 
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+    let connection = await mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      port: 3308,
+      password: "notSecureChangeMe",
+      database: "CodeCruisersWebShop",
     });
+
+    console.log("Connected");
+
+    // const connection = await mysql.createConnection({
+    //   host: process.env.DB_HOST,
+    //   user: process.env.DB_USER,
+    //   password: process.env.DB_PASSWORD,
+    //   database: process.env.DB_NAME,
+    // });
 
     //kolla i databasen om det finns någon mail som matchar
     const [rows]: [mysql.RowDataPacket[], any] = await connection.query(
@@ -80,7 +97,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       console.log("no email in the db");
     }
   } catch (error) {
-    console.error("Error", error);
+    console.error("Error is", error);
   }
 
   //sätt en flagga om att vi är inloggade.

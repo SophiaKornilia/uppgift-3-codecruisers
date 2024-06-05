@@ -1,8 +1,8 @@
 import express from "express";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 var cors = require("cors");
 const bcrypt = require("bcrypt");
-import connectToDatabase from "./services/databaseConnection";
+import mysql from 'mysql2/promise';
 import userRoutes from "./resources/users/users.router";
 import subscriptionRoutes from "./resources/subscriptions/subscriptions.router";
 import contentRoutes from "./resources/content/content.router";
@@ -15,16 +15,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-if (typeof process.env.DATABASE_URL === "string") {
-  let url: string = process.env.DATABASE_URL;
+// if (typeof process.env.DATABASE_URL === "string") {
+//   let url: string = process.env.DATABASE_URL;
 
-  let connectToDatabase = (url: string): void => {
-    console.log("connectToDatabase");
-    console.log("url", url);
-  };
+//   let connectToDatabase = (url: string): void => {
+//     console.log("connectToDatabase");
+//     console.log("url", url);
+//   };
 
-  connectToDatabase(url);
-}
+//   connectToDatabase(url);
+// }
 
 app.use(express.json());
 
@@ -35,11 +35,22 @@ app.use("/api/content", contentRoutes);
 app.use("/api/payments", paymentRoutes);
 
 app.get("/", async (req, res) => {
-  res.send("Success");
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    port: 3307,
+    password: "notSecureChangeMe",
+    database: "CodeCruisersWebShop"
+  });
 
-  const db = await connectToDatabase();
-  const [results, fields] = await db.query("SELECT * FROM `pages`");
-  res.json(results);
+  const [results, fields] = await connection.query(
+    'SELECT * FROM `pages`'
+  );
+  
+  res.send("Success");
+  // const db = await connectToDatabase();
+  // const [results, fields] = await db.query("SELECT * FROM `pages`");
+  // res.json(results);
 });
 
 // AUTH:
@@ -50,6 +61,7 @@ app.post("/content", async (req, res) => {
   
 });
 
-app.listen(PORT, () => {
-  console.log("Started");
-});
+app.listen(PORT,() => {
+  console.log('The application is listening '
+        + 'on port http://localhost:'+PORT);
+})
