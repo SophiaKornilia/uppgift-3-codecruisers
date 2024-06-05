@@ -8,6 +8,7 @@ const CheckoutButton: React.FC<CheckoutButtonProps> = ({ subscriptionLevel }) =>
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ subscriptionLevel }),
+            credentials: "include",
         });
 
         const data = await response.json();

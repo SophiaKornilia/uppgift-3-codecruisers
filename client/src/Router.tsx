@@ -9,6 +9,7 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { SuccessfullyRegistered } from "./pages/SuccessfullyRegistered";
 import { SuccessfullyAddedBook } from "./pages/SuccessfullyAddedBook";
+import { Confirmation } from "./pages/Confirmation";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
       {
         path: "/SuccessfullyAddedBook",
         element: <SuccessfullyAddedBook />,
+      },
+      {
+        path: "/Confirmation",
+        element: <Confirmation />,
       },
     ],
   },
