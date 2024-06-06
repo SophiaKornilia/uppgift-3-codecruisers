@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import { NotFound } from "./pages/NotFound";
 import { Layout } from "./components/Layout";
 import { Home } from "./pages/Home";
-import { Admin } from "./pages/Admin";
 import { MyPage } from "./pages/MyPage";
 import { MySubscriptions } from "./pages/MySubscriptions";
 import { Login } from "./pages/Login";
@@ -10,6 +9,7 @@ import { Register } from "./pages/Register";
 import { SuccessfullyRegistered } from "./pages/SuccessfullyRegistered";
 import { SuccessfullyAddedBook } from "./pages/SuccessfullyAddedBook";
 import { Confirmation } from "./pages/Confirmation";
+import { AdminStatus } from "./pages/AdminStatus";
 
 export const router = createBrowserRouter([
   {
@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <Admin />,
+        element: <AdminStatus />,
       },
       {
         path: "/MyPage",
