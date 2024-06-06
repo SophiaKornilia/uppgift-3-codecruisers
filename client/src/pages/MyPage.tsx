@@ -12,6 +12,7 @@ export const MyPage = () => {
   const [loggedinUser, setLoggedinUser] = useState<string | null>(null);
   // const [userId, setUserId] = useState<string | null>(null);
   const [books, setBooks] = useState<IBook[]>([]);
+  const [unavailableBooks, setUnavailableBooks] = useState<IBook[]>([]);
 
   useEffect(() => {
     if (user) {
@@ -22,6 +23,7 @@ export const MyPage = () => {
   console.log("MySubscriptions", user, "loggedin", loggedinUser);
 
   const url = "http://localhost:3000/api/content/subBooks";
+  const url2 = "http://localhost:3000/api/content/noAccess";
 
   useEffect(() => {
     const getSubscriptionBooks = async () => {
@@ -38,13 +40,11 @@ export const MyPage = () => {
           }),
         });
         const resultData = await result.json();
-        console.log("Fetched data", resultData);
+        console.log("Fetched data", resultData.books);
 
-        if (Array.isArray(resultData)) {
-          setBooks(resultData);
-        } else if (resultData.isASubscriber) {
-          setBooks([resultData]);
-          console.log("Connection worked", resultData);
+        if (Array.isArray(resultData.books)) {
+          setBooks(resultData.books);
+          console.log("Connection worked", resultData.books);
         } else {
           console.error("Unexpected data format:", resultData);
         }
@@ -55,6 +55,39 @@ export const MyPage = () => {
     };
 
     getSubscriptionBooks();
+  }, [loggedinUser]);
+
+  
+  useEffect(() => {
+    const getNoAccessBooks = async () => {
+      if (!loggedinUser) return;
+
+      try {
+        const response = await fetch(url2, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user: loggedinUser,
+          }),
+        });
+        const responseData = await response.json();
+        console.log("Fetched data", responseData.unavailableBooks);
+
+        if (Array.isArray(responseData.unavailableBooks)) {
+          setUnavailableBooks(responseData.unavailableBooks);
+          console.log("Connection worked", responseData.unavailableBooks);
+        } else {
+          console.error("Unexpected data format:", responseData);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        alert("Something went wrong!");
+      }
+    };
+
+    getNoAccessBooks();
   }, [loggedinUser]);
 
   return (
@@ -72,6 +105,14 @@ export const MyPage = () => {
           <h3>Title:{book.title}</h3>
           <h3>{book.author}</h3>
           <h3>{book.text}</h3>
+        </div>
+      ))}
+      <div>
+        <h2>Want to read more?</h2>
+      </div>
+        {unavailableBooks.map((unavailableBook) => (
+        <div key={unavailableBook.title}>
+          <h3>Title:{unavailableBook.title}</h3>
         </div>
       ))}
     </div>

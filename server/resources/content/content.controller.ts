@@ -16,18 +16,87 @@ export const getSubContent = async (
 ): Promise<void> => {
   // Hämta innehåll baserat på prenumerationsnivå
 
-  let {loggedInUser} = req.body;
-  console.log(loggedInUser);
+  let {user} = req.body;
+  console.log("Logged in: " , user);
 
-  res.status(200).json([
+  const userEmail = user;
+
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      port: Number(process.env.DB_PORT),
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
+
+    console.log(userEmail);
+    
+    const [rows] = await connection.query(
+      "SELECT DISTINCT b.* FROM books b JOIN subscriptions s ON b.levelid = s.levelid JOIN users u ON s.email = ?",
+      [userEmail]
+    );
+
+    console.log(rows);
+    
+    
+  res.status(200).json(
     {
-      isASubscriber: true,
-      title: "Some Book Title",
-      author: "Some Author",
-      text: "Some text content of the book",
+      books: rows
     },
-  ]);
+  );
+
+  }catch (error){
+    console.error("Something is wrong", error);
+  }
 };
+
+
+
+
+
+export const getNoAccessSubContent = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  // Hämta innehåll baserat på prenumerationsnivå
+
+  let {user} = req.body;
+  console.log("Logged in: " , user);
+
+  const userEmail = user;
+
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      port: Number(process.env.DB_PORT),
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
+
+    console.log(userEmail);
+    
+    const [rows] = await connection.query(
+      "SELECT DISTINCT b.* FROM books b LEFT JOIN subscriptions s ON b.levelid = s.levelid LEFT JOIN users u ON s.email = u.email WHERE u.email IS NULL OR u.email != ?",
+      [userEmail]
+    );
+
+    console.log(rows);
+    
+    
+  res.status(200).json(
+    {
+      unavailableBooks: rows
+    },
+  );
+
+  }catch (error){
+    console.error("Something is wrong", error);
+  }
+};
+
+
 export const addContent = async (
   req: Request,
   res: Response
