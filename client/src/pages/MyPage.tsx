@@ -103,9 +103,9 @@ export const MyPage = () => {
       </div>
       {books.map((book) => (
         <div key={book.title}>
-          <h3>Title:{book.title}</h3>
-          <h3>{book.author}</h3>
-          <h3>{book.text}</h3>
+          <h3>{book.title}</h3>
+          <h4>{book.author}</h4>
+          <p>{book.text}</p>
         </div>
       ))}
       <div>
@@ -114,7 +114,7 @@ export const MyPage = () => {
       {unavailableBooks.map((unavailableBook) => (
         <div key={unavailableBook.title}>
           <h3>
-            Title:
+            
             <Link to={`/MySubscriptions?levelId=${unavailableBook.levelId}`} state={{ fromLink: true }}>
               {unavailableBook.title}
             </Link>

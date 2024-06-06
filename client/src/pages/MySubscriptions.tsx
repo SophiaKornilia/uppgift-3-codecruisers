@@ -51,7 +51,7 @@ export const MySubscriptions = () => {
       <button onClick={getInformation}>Get information</button>
       <div className="home-Container">
         <h2>Choose your subsciptionlevel</h2>
-        {fromLink && <p>You arrived here via a link! Level ID: {levelId}</p>}
+        {fromLink && <p>You arrived here via a link! To read that book you clicked on, upgrade to level: {levelId}</p>}
         <button className="box">Muggle Magic Section</button>
         <button className="box">Wizarding Wonders Wing</button>
         <button className="box">The Forbidden Archives</button>
