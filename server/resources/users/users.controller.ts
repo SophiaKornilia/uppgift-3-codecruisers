@@ -88,12 +88,14 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) {
-        res.status(400).json("Wrong user or password");
+        res.status(400).json("Wrong password");
+        console.log("Wrong password");
       } else {
         res.status(200).json({ isLoggedIn: true });
       }
     } else {
-      console.log("no email in the db");
+      res.status(400).json("no email in the db");
+      console.log("No email in database");
     }
   } catch (error) {
     console.error("Error is", error);
