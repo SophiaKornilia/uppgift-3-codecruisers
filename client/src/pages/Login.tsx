@@ -12,6 +12,7 @@ export const Login = () => {
   const { user, setUser } = useUser();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleInputEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -22,6 +23,10 @@ export const Login = () => {
   };
 
   const handleClick = async () => {
+    if (!email || !password) {
+      setErrorMessage("Both email and password fields are required!");
+      return;
+    }
     try {
       const result = await fetch(url, {
         method: "POST",
@@ -40,8 +45,8 @@ export const Login = () => {
         setUser(email);
         console.log("Signed in");
       } else {
-        alert("Unable to log in!");
-        console.log("couldn´t sign in");
+        setErrorMessage("Incorrect email or password");
+        console.log("Couldn't sign in");
       }
     } catch (error) {
       alert("Something went wrong!");
@@ -76,7 +81,7 @@ export const Login = () => {
             value={password}
             required
           />
-        </div>
+        </div>{errorMessage && <p >{errorMessage}</p>}
         <button onClick={handleClick}>Login</button>
       </div>
       <div>

@@ -1,7 +1,11 @@
 import { NavLink } from "react-router-dom";
 import "../style/Navigation.css";
 import { Logout } from "./Logout";
+import { useUser } from "../context/UserContext";
+
 export const Navigation = () => {
+  const { user } = useUser();
+
   return (
     <nav>
       <ul>
@@ -21,7 +25,8 @@ export const Navigation = () => {
             <button>Admin</button>
           </NavLink>
         </li>
-        <li>
+        {user ?  (
+        <><li>
           <NavLink
             to="/MyPage"
             className={({ isActive }) => (isActive ? "active" : "")}
@@ -36,14 +41,16 @@ export const Navigation = () => {
           >
             <button>My Subscriptions</button>
           </NavLink>
-        </li>
-        <li>
+        </li><li><Logout /></li></>
+        ) : (
+        <>
+           <li>
           <NavLink
             to="/Login"
             className={({ isActive }) => (isActive ? "active" : "")}
           >
             <button>Login</button>
-            <Logout />
+            
           </NavLink>
         </li>
         <li>
@@ -54,6 +61,11 @@ export const Navigation = () => {
             <button>Register</button>
           </NavLink>
         </li>
+        </>
+        ) }
+        
+       
+       {/* Dessa tre länkar nedan räcker att de ligger i Router.tsx 
         <li>
           <NavLink
             to="/SuccessfullyRegistered"
@@ -71,7 +83,7 @@ export const Navigation = () => {
             to="/Confirmation"
             className={({ isActive }) => (isActive ? "active" : "")}
           ></NavLink>
-        </li>
+        </li>*/}
       </ul>
     </nav>
   );

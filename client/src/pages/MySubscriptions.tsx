@@ -1,10 +1,21 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
+import { useLocation } from "react-router-dom";
 
 export const MySubscriptions = () => {
   const { user } = useUser();
   const [loggedinUser, setLoggedinUser] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const levelId = queryParams.get('levelId');
+  const [fromLink, setFromLink] = useState(false);
+
+  useEffect(() => {
+    if (location.state && location.state.fromLink) {
+      setFromLink(true);
+    }
+  }, [location]);
 
   useEffect(() => {
     setLoggedinUser(user);
@@ -40,6 +51,7 @@ export const MySubscriptions = () => {
       <button onClick={getInformation}>Get information</button>
       <div className="home-Container">
         <h2>Choose your subsciptionlevel</h2>
+        {fromLink && <p>You arrived here via a link! To read that book you clicked on, upgrade to level: {levelId}</p>}
         <button className="box">Muggle Magic Section</button>
         <button className="box">Wizarding Wonders Wing</button>
         <button className="box">The Forbidden Archives</button>
