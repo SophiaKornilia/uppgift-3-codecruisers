@@ -1,4 +1,8 @@
+import { useUser } from "../context/UserContext";
+
 export const Logout = () => {
+  const { user, setUser } = useUser();
+
   const url = "http://localhost:3000/api/users/logout";
   const successUrl = "/";
   const handleLogout = async () => {
@@ -11,6 +15,8 @@ export const Logout = () => {
       });
       const resultData = await result.json();
       if (!resultData.isLoggedIn) {
+        setUser("");
+        localStorage.clear();
         document.location.href = successUrl;
         console.log("You are now logged out");
       } else {
@@ -19,6 +25,8 @@ export const Logout = () => {
       }
     } catch (error) {
       console.error("Something went wrong", error);
+    } finally {
+      console.log("Loggedout user", user);
     }
   };
   return (

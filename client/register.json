@@ -1,1 +1,6 @@
-{"isRegistered": true, "id": 1234}
+[{
+    "isASubscriber": true,
+    "title": "Some Book Title",
+    "author": "Some Author",
+    "text": "Some text content of the book"
+  }]
