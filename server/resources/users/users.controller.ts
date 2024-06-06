@@ -1,7 +1,10 @@
-import connectToDatabase from "../../services/databaseConnection";
 import { Request, Response } from "express";
 import mysql from "mysql2/promise";
+import dotenv from "dotenv";
 const bcrypt = require("bcrypt");
+
+dotenv.config();
+
 
 export const registerUser = async (
   req: Request,
@@ -11,6 +14,7 @@ export const registerUser = async (
 
   if (!firstName || !lastName || !email || !address || !password) {
     res.status(400).json({ error: "All fields are required" });
+    return;
   }
 
   console.log(firstName);
@@ -18,6 +22,7 @@ export const registerUser = async (
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
@@ -45,6 +50,8 @@ export const registerUser = async (
   res.status(200).json({ isRegistered: true });
 };
 
+
+
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   let { email, password } = req.body;
   console.log("email and password", email, password);
@@ -52,10 +59,20 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
     });
+
+    console.log("Connected");
+
+    // const connection = await mysql.createConnection({
+    //   host: process.env.DB_HOST,
+    //   user: process.env.DB_USER,
+    //   password: process.env.DB_PASSWORD,
+    //   database: process.env.DB_NAME,
+    // });
 
     //kolla i databasen om det finns någon mail som matchar
     const [rows]: [mysql.RowDataPacket[], any] = await connection.query(
@@ -79,7 +96,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       console.log("no email in the db");
     }
   } catch (error) {
-    console.error("Error", error);
+    console.error("Error is", error);
   }
 
   //sätt en flagga om att vi är inloggade.
