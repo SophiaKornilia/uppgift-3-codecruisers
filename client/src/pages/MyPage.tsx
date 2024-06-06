@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
+import { Link } from "react-router-dom";
 interface IBook {
   title: string;
   author: string;
   text: string;
+  levelId: number;
 }
 
 export const MyPage = () => {
@@ -57,7 +59,6 @@ export const MyPage = () => {
     getSubscriptionBooks();
   }, [loggedinUser]);
 
-  
   useEffect(() => {
     const getNoAccessBooks = async () => {
       if (!loggedinUser) return;
@@ -110,9 +111,14 @@ export const MyPage = () => {
       <div>
         <h2>Want to read more?</h2>
       </div>
-        {unavailableBooks.map((unavailableBook) => (
+      {unavailableBooks.map((unavailableBook) => (
         <div key={unavailableBook.title}>
-          <h3>Title:{unavailableBook.title}</h3>
+          <h3>
+            Title:
+            <Link to={`/MySubscriptions?levelId=${unavailableBook.levelId}`} state={{ fromLink: true }}>
+              {unavailableBook.title}
+            </Link>
+          </h3>
         </div>
       ))}
     </div>
