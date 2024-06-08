@@ -10,23 +10,19 @@ interface SubscriptionLevel extends RowDataPacket {
   stripePriceId: string;
 }
 
-export const checkout = async (
-    req: Request,
-    res: Response
-  ): Promise<void> => {
-    
+export const checkout = async (req: Request, res: Response): Promise<void> => {
   // const stripe = initStripe();
 
   // if (!stripe) {
   //   res.status(500).send({ error: "Stripe initialization failed" });
   //   return;
   // }
-  // const { subscriptionLevel } = req.body;
+  const { subscriptionLevel } = req.body;
   // console.log("Sub level: ", subscriptionLevel);
 
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
+    port: Number(process.env.DB_PORT),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
@@ -50,26 +46,28 @@ export const checkout = async (
   // console.log(price, "kr");
   // console.log("Stripe Product ID: ", stripePriceId);
 
-  //länka produkterna i databasen till ett id i stripe 
+  //länka produkterna i databasen till ett id i stripe
   try {
-    const stripeApi = new Stripe(process.env.STRIPE_KEY as string); 
-    
+    const stripeApi = new Stripe(process.env.STRIPE_KEY as string);
+
+    // Hämta stripePriceId baserat på subscriptionLevel
+
     let session = await stripeApi.checkout.sessions.create({
-        //customer_email: req.session?.user?.email, 
-        //payment_method_types: ["card"],
-        line_items: [
-            {
-              price: "price_1POKXiEplf7W51DdWrQcKgOB", // Använd pris-ID
-              quantity: 1,
-            },
-          ],
+      //customer_email: req.session?.user?.email,
+      //payment_method_types: ["card"],
+      line_items: [
+        {
+          price: "price_1POKXiEplf7W51DdWrQcKgOB", // Använd pris-ID
+          quantity: 1,
+        },
+      ],
       mode: "subscription",
       success_url: "http://localhost:5173/Confirmation",
       //cancel_url: `http://localhost:5173/cancel`,
     });
 
     res.json(session);
-   // res.status(200).send({ sessionId: session.id });
+    // res.status(200).send({ sessionId: session.id });
   } catch (error) {
     console.error("Error creating Stripe checkout session:", error);
     res.status(500).send({ error: "Failed to create Stripe checkout session" });
@@ -82,12 +80,12 @@ export const verifySession = async (
 ): Promise<void> => {
   try {
     const connection = await mysql.createConnection({
-        host: process.env.DB_HOST,
+      host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-      });
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
     console.log("Connected verify");
     // Hantera betalningsfel och försöka igen
     const stripe = initStripe();
@@ -113,7 +111,7 @@ export const verifySession = async (
           isActive: true, // Du kan fylla i det här baserat på din logik
         };
 
-       const sql = "INSERT INTO subscriptions SET ?";
+        const sql = "INSERT INTO subscriptions SET ?";
         await connection.execute(sql, order); // Använd execute-metoden för att köra SQL-frågan
         console.log("Subscription inserted successfully");
         res.status(200).json({ verified: true });
@@ -137,12 +135,8 @@ export const retryPayment = async (
   const stripe = initStripe();
 };
 
-export const webhooks = async (  req: Request,
-res: Response
-): Promise<void> => {
-
+export const webhooks = async (req: Request, res: Response): Promise<void> => {
   console.log(req.body);
 
   res.json({});
-  
 };
