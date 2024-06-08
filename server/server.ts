@@ -2,28 +2,34 @@ import express from "express";
 // import dotenv from "dotenv";
 var cors = require("cors");
 const bcrypt = require("bcrypt");
-const cookieSession = require("cookie-session")
-import mysql from 'mysql2/promise';
+const cookieSession = require("cookie-session");
+import mysql from "mysql2/promise";
 import userRoutes from "./resources/users/users.router";
 import subscriptionRoutes from "./resources/subscriptions/subscriptions.router";
 import contentRoutes from "./resources/content/content.router";
 import paymentRoutes from "./resources/payments/payments.router";
 import initStripe from "./stripe";
 
-
 let app = express();
 
 const PORT: Number = 3000;
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:3000"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieSession({
+app.use(
+  cookieSession({
     secret: "s3cr3tk3y",
     maxAge: 1000 * 60 * 60, // 1h
     httpOnly: true,
-    secure: false, 
-    sameSite: "lax"
-}))
+    secure: false,
+    sameSite: "lax",
+  })
+);
 
 // if (typeof process.env.DATABASE_URL === "string") {
 //   let url: string = process.env.DATABASE_URL;
@@ -56,15 +62,17 @@ app.get("/", async (req, res) => {
 
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
+      port: Number(process.env.DB_PORT),
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
     });
 
     // Hämta data från MySQL-databasen
-    const [results, fields] = await connection.query('SELECT * FROM `subscriptionLevels`');
-    
+    const [results, fields] = await connection.query(
+      "SELECT * FROM `subscriptionLevels`"
+    );
+
     const stripe = initStripe();
 
     if (!stripe) {
@@ -73,13 +81,13 @@ app.get("/", async (req, res) => {
 
     // Hämta produktdata från Stripe
     const subLevels = await stripe.products.list({
-      expand: ["data.default_price"]
+      expand: ["data.default_price"],
     });
 
     // Skicka båda resultaten som ett enda JSON-svar
     res.status(200).json({
       databaseResults: results,
-      stripeProducts: subLevels.data
+      stripeProducts: subLevels.data,
     });
 
     // Stäng anslutningen till databasen
@@ -90,15 +98,12 @@ app.get("/", async (req, res) => {
   }
 });
 
-
-
 // INNEHÅLL:
 
-app.post("/content", async (req, res) => {
-  
-});
+app.post("/content", async (req, res) => {});
 
-app.listen(PORT,() => {
-  console.log('The application is listening '
-        + 'on port http://localhost:'+PORT);
-})
+app.listen(PORT, () => {
+  console.log(
+    "The application is listening " + "on port http://localhost:" + PORT
+  );
+});
