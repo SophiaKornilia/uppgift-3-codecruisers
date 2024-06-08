@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
 import { useLocation } from "react-router-dom";
+import CheckoutButton from "../components/CheckOutButton";
 
 export const MySubscriptions = () => {
   const { user } = useUser();
@@ -10,6 +11,13 @@ export const MySubscriptions = () => {
   const queryParams = new URLSearchParams(location.search);
   const levelId = queryParams.get("levelId");
   const [fromLink, setFromLink] = useState(false);
+  const [selectedSubscription, setSelectedSubscription] = useState<
+    number | null
+  >(null);
+
+  const handleSubscriptionSelect = (subscriptionLevel: number | null) => {
+    setSelectedSubscription(subscriptionLevel);
+  };
 
   useEffect(() => {
     if (location.state && location.state.fromLink) {
@@ -57,9 +65,18 @@ export const MySubscriptions = () => {
             upgrade to level: {levelId}
           </p>
         )}
-        <button className="box">Muggle Magic Section</button>
-        <button className="box">Wizarding Wonders Wing</button>
-        <button className="box">The Forbidden Archives</button>
+        <div className="box" onClick={() => handleSubscriptionSelect(1)}>
+          Muggle Magic Section
+        </div>
+        <div className="box" onClick={() => handleSubscriptionSelect(2)}>
+          Wizarding Wonders Wing
+        </div>
+        <div className="box" onClick={() => handleSubscriptionSelect(3)}>
+          The Forbidden Archives
+        </div>
+        {selectedSubscription !== null && (
+          <CheckoutButton subscriptionLevel={selectedSubscription} />
+        )}
       </div>
     </div>
   );
