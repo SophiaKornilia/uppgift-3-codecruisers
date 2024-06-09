@@ -1,4 +1,3 @@
-import connectToDatabase from "../../services/databaseConnection";
 import { Request, Response } from "express";
 import mysql from "mysql2/promise";
 
@@ -6,9 +5,36 @@ export const getContent = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const db = await connectToDatabase();
-  // Hämta böcker utanför pernumerationsnivå
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      port: Number(process.env.DB_PORT),
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
+
+
+    const [rows] = await connection.query(
+      'SELECT * FROM `books`'
+    );
+    
+
+    console.log(rows);
+    
+    
+  res.status(200).json(
+    {
+      books: rows
+    },
+  );
+
+  }catch (error){
+    console.error("Something is wrong", error);
+  }
 };
+ 
+
 
 export const getSubContent = async (
   req: Request,
@@ -33,9 +59,14 @@ export const getSubContent = async (
     console.log(userEmail);
     
     const [rows] = await connection.query(
-      "SELECT DISTINCT b.* FROM books b JOIN subscriptions s ON b.levelid = s.levelid JOIN users u ON s.email = ?",
+      `SELECT DISTINCT b.* 
+       FROM books b 
+       JOIN subscriptions s ON b.levelid = s.levelid 
+       JOIN users u ON s.email = u.email
+       WHERE u.email = ? AND s.endDate > NOW()`,
       [userEmail]
     );
+    
 
     console.log(rows);
     
@@ -114,6 +145,7 @@ export const addContent = async (
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
+      port: Number(process.env.DB_PORT),
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
     });
