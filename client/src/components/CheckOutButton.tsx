@@ -1,10 +1,22 @@
+import { useUser } from "../context/UserContext";
+
+
 interface CheckoutButtonProps {
   subscriptionLevel: number;
 }
+
 const CheckoutButton: React.FC<CheckoutButtonProps> = ({
   subscriptionLevel,
 }) => {
+  const { user } = useUser();
+
+
   const handleClick = async () => {
+    if (!user) {
+      console.error("User is not defined");
+      return;
+    }
+
     const response = await fetch(
       "http://localhost:3000/api/payments/checkout",
       {
@@ -12,15 +24,19 @@ const CheckoutButton: React.FC<CheckoutButtonProps> = ({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ subscriptionLevel }),
-        credentials: "include",
+        //body: JSON.stringify({ subscriptionLevel, user }),
+        //credentials: "include",
       }
     );
 
     const data = await response.json();
-    localStorage.setItem("sessionId", JSON.stringify(data.sessionId));
-    window.location = data.url;
-    console.log("datasessionid",data.sessionId);
+    console.log(data);
+    if (data.url) {
+      window.location.href = data.url; // Redirect to Stripe checkout page
+    } else {
+      console.error("No URL found in the response");
+    }
+    //console.log("datasessionid",data.sessionId);
   };
 
   return (
