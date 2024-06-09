@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../style/Admin.css";
+
 export const Admin = () => {
   const url = "http://localhost:3000/api/content";
   const successUrl = "http://localhost:5173/SuccessfullyAddedBook";
