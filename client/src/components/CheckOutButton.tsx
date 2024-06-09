@@ -31,6 +31,8 @@ const CheckoutButton: React.FC<CheckoutButtonProps> = ({
 
     const data = await response.json();
     console.log(data);
+    localStorage.setItem("sessionId", JSON.stringify(data.id))
+
     if (data.url) {
       window.location.href = data.url; // Redirect to Stripe checkout page
     } else {

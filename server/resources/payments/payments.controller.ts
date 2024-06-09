@@ -73,6 +73,59 @@ export const checkout = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+// export const verifySession = async (
+//   req: Request,
+//   res: Response
+// ): Promise<void> => {
+//   try {
+//     const connection = await mysql.createConnection({
+//       host: process.env.DB_HOST,
+//       port: Number(process.env.DB_PORT),
+//       user: process.env.DB_USER,
+//       password: process.env.DB_PASSWORD,
+//       database: process.env.DB_NAME,
+//     });
+//     console.log("Connected verify");
+//     // Hantera betalningsfel och försöka igen
+//     const stripeApi = new Stripe(process.env.STRIPE_KEY as string);
+//     console.log("CC Nu kommer jag hit!!!!!!");
+
+//     const sessionId = req.body.sessionId;
+
+//     if (stripeApi) {
+//       let session = await stripeApi.checkout.sessions.retrieve(sessionId);
+
+//       if (session.payment_status === "paid") {
+//         const lineItems = await stripeApi.checkout.sessions.listLineItems(
+//           sessionId
+//         );
+//         console.log("Lineitems: ", lineItems);
+
+//         const order = {
+//           price: session.amount_total,
+//           products: JSON.stringify(lineItems.data),
+//           userId: session.customer_details,
+//           startDate: new Date(),
+//           endDate: null, // Du kan fylla i det här baserat på din logik
+//           isActive: true, // Du kan fylla i det här baserat på din logik
+//         };
+
+//         const sql = "INSERT INTO subscriptions SET ?";
+//         await connection.execute(sql, order); // Använd execute-metoden för att köra SQL-frågan
+//         console.log("Subscription inserted successfully");
+//         res.status(200).json({ verified: true });
+//       }
+//     } else {
+//       console.error("Stripe is not defined!");
+//       res.status(500).json({ error: "Internal server error" });
+//     }
+//   } catch (error) {
+//     console.error("Error verifying session:", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// };
+
+
 export const verifySession = async (
   req: Request,
   res: Response
@@ -86,44 +139,79 @@ export const verifySession = async (
       database: process.env.DB_NAME,
     });
     console.log("Connected verify");
-    // Hantera betalningsfel och försöka igen
-    const stripe = initStripe();
-    console.log("CC Nu kommer jag hit!!!!!!");
+
+    const stripeApi = new Stripe(process.env.STRIPE_KEY as string);
 
     const sessionId = req.body.sessionId;
 
-    if (stripe) {
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-      if (session.payment_status === "paid") {
-        const lineItems = await stripe.checkout.sessions.listLineItems(
-          sessionId
-        );
-        console.log("Lineitems: ", lineItems);
-
-        const order = {
-          price: session.amount_total,
-          products: JSON.stringify(lineItems.data),
-          userId: session.customer_details,
-          startDate: new Date(),
-          endDate: null, // Du kan fylla i det här baserat på din logik
-          isActive: true, // Du kan fylla i det här baserat på din logik
-        };
-
-        const sql = "INSERT INTO subscriptions SET ?";
-        await connection.execute(sql, order); // Använd execute-metoden för att köra SQL-frågan
-        console.log("Subscription inserted successfully");
-        res.status(200).json({ verified: true });
-      }
-    } else {
+    if (!stripeApi) {
       console.error("Stripe is not defined!");
       res.status(500).json({ error: "Internal server error" });
+      return;
     }
+
+    if (!sessionId) {
+      console.error("Session ID is missing!");
+      res.status(400).json({ error: "Session ID is missing" });
+      return;
+    }
+
+    let session: Stripe.Checkout.Session | undefined;
+
+    try {
+      session = await stripeApi.checkout.sessions.retrieve(sessionId);
+    } catch (error) {
+      console.error("Error retrieving session:", error);
+      res.status(500).json({ error: "Internal server error" });
+      return;
+    }
+
+    if (!session) {
+      console.error("Session not found!");
+      res.status(404).json({ error: "Session not found" });
+      return;
+    }
+
+    if (session.payment_status !== "paid") {
+      console.error("Session not paid!");
+      res.status(400).json({ error: "Session not paid" });
+      return;
+    }
+
+    const lineItems = await stripeApi.checkout.sessions.listLineItems(
+      sessionId
+    );
+    console.log("Lineitems: ", lineItems);
+
+    const startDate = new Date();
+    const endDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000); // Lägger till 7 dagar i millisekunder
+    
+
+    const order = {
+      price: session.amount_total,
+      email: "jennika2@gmail.com",
+      //products: JSON.stringify(lineItems.data),
+     // userId: session.customer_details,
+      paymentStatus: "active",
+      levelId: 2,
+      startDate: startDate,
+      endDate: endDate, // Du kan fylla i det här baserat på din logik
+      isActive: true, // Du kan fylla i det här baserat på din logik
+    };
+
+    await connection.query(
+      "INSERT INTO subscriptions SET ?",
+      [order]
+    );
+
+    console.log("Subscription inserted successfully");
+    res.status(200).json({ verified: true });
   } catch (error) {
     console.error("Error verifying session:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 export const retryPayment = async (
   req: Request,
