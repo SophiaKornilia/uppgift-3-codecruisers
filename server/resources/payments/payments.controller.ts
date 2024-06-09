@@ -17,18 +17,18 @@ export const checkout = async (req: Request, res: Response): Promise<void> => {
   //   res.status(500).send({ error: "Stripe initialization failed" });
   //   return;
   // }
-  const { subscriptionLevel } = req.body;
-  // console.log("Sub level: ", subscriptionLevel);
+  // const { subscriptionLevel, user } = req.body;
+  // // console.log("Sub level: ", subscriptionLevel);
 
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  });
+  // const connection = await mysql.createConnection({
+  //   host: process.env.DB_HOST,
+  //   port: Number(process.env.DB_PORT),
+  //   user: process.env.DB_USER,
+  //   password: process.env.DB_PASSWORD,
+  //   database: process.env.DB_NAME,
+  // });
 
-  console.log("Connected");
+  // console.log("Connected");
 
   // // Genomför betalning via Stripe
   // const [rows]: [SubscriptionLevel[], any] = await connection.query(
@@ -57,13 +57,12 @@ export const checkout = async (req: Request, res: Response): Promise<void> => {
       //payment_method_types: ["card"],
       line_items: [
         {
-          price: "price_1POKXiEplf7W51DdWrQcKgOB", // Använd pris-ID
+          price: "price_1POK1FEplf7W51DdDX7Kj16Z", // Använd pris-ID
           quantity: 1,
         },
       ],
       mode: "subscription",
       success_url: "http://localhost:5173/Confirmation",
-      //cancel_url: `http://localhost:5173/cancel`,
     });
 
     res.json(session);
@@ -136,7 +135,16 @@ export const retryPayment = async (
 };
 
 export const webhooks = async (req: Request, res: Response): Promise<void> => {
-  console.log(req.body);
+  
+
+  switch(req.body.type) {
+    case "customer.subscription.updated":
+      console.log(req.body);
+      break;
+    default:
+      console.log(req.body.type);
+      break;
+  }
 
   res.json({});
 };

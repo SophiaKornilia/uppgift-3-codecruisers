@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { AdminLogin } from "./AdminLogin";
 import { Admin } from "./Admin";
+import { AdminGet } from "../components/AdminGet";
 
 export const AdminStatus = () => {
     const [admin, setAdmin] = useState(
@@ -14,12 +15,12 @@ export const AdminStatus = () => {
 	};
 
     return (
-        <div>{admin ? (
-			<><Admin /><button onClick={() => handleAdminStatus(false)}>Logout</button>
+        <>{admin ? (
+			<><AdminGet /><Admin /><button onClick={() => handleAdminStatus(false)}>Logout</button>
 			</>) : (
 				<AdminLogin handleAdminStatus={handleAdminStatus} />
 				)
-			}</div>
+			}</>
     )
 
 }
