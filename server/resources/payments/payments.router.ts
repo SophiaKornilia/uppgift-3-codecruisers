@@ -7,7 +7,7 @@ import {
 } from "./payments.controller";
 const router = Router();
 
-router.get("/checkout", checkout);
+router.post("/checkout", checkout);
 
 router.post("/verify-session", verifySession);
 
