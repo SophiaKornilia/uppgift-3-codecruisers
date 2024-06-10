@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { useUser } from "../context/UserContext";
 
 export const Confirmation = () => {
+    const { user } = useUser();
+
     const [verified, setVerified] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -24,7 +27,7 @@ export const Confirmation = () => {
                 headers: {
                     "Content-type": "application/json"
                 },
-                body: JSON.stringify({ sessionId })
+                body: JSON.stringify({ sessionId, user })
                 })
                 console.log(response);
                 

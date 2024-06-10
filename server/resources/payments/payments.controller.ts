@@ -91,6 +91,7 @@ export const verifySession = async (
     const stripeApi = new Stripe(process.env.STRIPE_KEY as string);
 
     const sessionId = req.body.sessionId;
+    const userEmail = req.body.user;
 
     if (!stripeApi) {
       console.error("Stripe is not defined!");
@@ -137,7 +138,7 @@ export const verifySession = async (
 
     const order = {
       price: session.amount_total,
-      email: "jennika2@gmail.com",
+      email: userEmail,
       //products: JSON.stringify(lineItems.data),
      // userId: session.customer_details,
       paymentStatus: "active",
