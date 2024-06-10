@@ -61,7 +61,7 @@ export const getSubContent = async (
     const [rows] = await connection.query(
       `SELECT DISTINCT b.* 
        FROM books b 
-       JOIN subscriptions s ON b.levelid = s.levelid 
+       JOIN subscriptions s ON b.levelid <= s.levelid 
        JOIN users u ON s.email = u.email
        WHERE u.email = ? AND s.endDate > NOW()`,
       [userEmail]
@@ -107,10 +107,10 @@ export const getNoAccessSubContent = async (
     });
 
     console.log(userEmail);
-    
+ 
     const [rows] = await connection.query(
-      "SELECT DISTINCT b.* FROM books b LEFT JOIN subscriptions s ON b.levelid = s.levelid LEFT JOIN users u ON s.email = u.email WHERE u.email IS NULL OR u.email != ?",
-      [userEmail]
+      "SELECT DISTINCT b.* FROM books b LEFT JOIN subscriptions s ON b.levelId >= s.levelId LEFT JOIN users u ON s.email = u.email WHERE u.email IS NULL OR (s.email = ? AND b.levelId > (SELECT levelId FROM subscriptions WHERE email = ?)) LIMIT 0, 25; ",
+      [userEmail, userEmail]
     );
 
     console.log(rows);
