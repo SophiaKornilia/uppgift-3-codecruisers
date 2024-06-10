@@ -24,8 +24,8 @@ const CheckoutButton: React.FC<CheckoutButtonProps> = ({
         headers: {
           "Content-Type": "application/json",
         },
-        //body: JSON.stringify({ subscriptionLevel, user }),
-        //credentials: "include",
+        body: JSON.stringify({ subscriptionLevel, user }),
+        credentials: "include",
       }
     );
 

@@ -43,5 +43,5 @@ export const Confirmation = () => {
 
 
     return <>
-    {verified && !isLoading ? "Tack för ditt köp" : "Laddar..."}</>
+    {verified && !isLoading ? <h1>Tack för ditt köp</h1> : "Laddar..."}</>
 }
