@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { useUser } from "../context/UserContext";
 
 export const Confirmation = () => {
+    const { user } = useUser();
+
     const [verified, setVerified] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -9,14 +12,31 @@ export const Confirmation = () => {
             console.log("CoduCruisers nu körs jag!");
             const verifySession = async () => {
                 console.log("CodeCruisers och jag går in i funktionen");
+
                 let sessionId;
                 const dataFromLS = localStorage.getItem("sessionId");
-                console.log(dataFromLS);
-                
+                console.log("Data from localStorage (sessionId):", dataFromLS);
+
+                let subLevel;
+                const subLevelFromLS = localStorage.getItem("subscriptionLevel");
+                console.log("Data from localStorage (subscriptionLevel):", subLevelFromLS);
 
                 if (dataFromLS) {
-                    sessionId = JSON.parse(dataFromLS);
-                    console.log(sessionId)
+                    try {
+                        sessionId = JSON.parse(dataFromLS);
+                        console.log("Parsed sessionId:", sessionId);
+                    } catch (error) {
+                        console.error("Failed to parse sessionId:", error);
+                    }
+                }
+
+                if (subLevelFromLS) {
+                    try {
+                        subLevel =  Number(subLevelFromLS);
+                        console.log("Parsed subscriptionLevel:", subLevel);
+                    } catch (error) {
+                        console.error("Failed to parse subscriptionLevel:", error);
+                    }
                 }
                 
                 const response = await fetch("http://localhost:3000/api/payments/verify-session", {
@@ -24,7 +44,7 @@ export const Confirmation = () => {
                 headers: {
                     "Content-type": "application/json"
                 },
-                body: JSON.stringify({ sessionId })
+                body: JSON.stringify({ sessionId, subLevel, user })
                 })
                 console.log(response);
                 
