@@ -55,6 +55,7 @@ export const checkout = async (req: Request, res: Response): Promise<void> => {
     let session = await stripeApi.checkout.sessions.create({
       //customer_email: req.session?.user?.email,
       //payment_method_types: ["card"],
+      customer_email: user,
       line_items: [
         {
           price: stripePriceId, // Använd pris-ID
@@ -180,10 +181,10 @@ export const webhooks = async (req: Request, res: Response): Promise<void> => {
 
   switch(req.body.type) {
     case "customer.subscription.updated":
-      // //console.log(req.body);
+      console.log(req.body);
       break;
     default:
-      //console.log(req.body.type);
+      console.log(req.body.type);
       break;
   }
 

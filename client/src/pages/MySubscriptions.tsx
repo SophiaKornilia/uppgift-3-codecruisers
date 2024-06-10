@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
 import { useLocation } from "react-router-dom";
 import CheckoutButton from "../components/CheckOutButton";
+import { EndSubscription } from "../components/EndSubscription";
 
 export const MySubscriptions = () => {
   const { user } = useUser();
@@ -30,31 +31,11 @@ export const MySubscriptions = () => {
   }, [user]);
 
   console.log("MySubscriptions", user, loggedinUser, selectedSubscription);
-  // const url = "http://localhost:3000/api/users/getUser";
-
-  // const getInformation = async () => {
-  //   try {
-  //     const result = await fetch(url, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         user: loggedinUser,
-  //       }),
-  //     });
-  //     const resultData = await result.json();
-  //     if (resultData.isASubscriber) {
-  //       setUserId(resultData.userId);
-  //     }
-  //   } catch (error) {
-  //     alert("Something went wrong!");
-  //   }
-  // };
-  // console.log("userid", userId);
+  
 
   return (
     <div>
+      <div><EndSubscription /> </div>
       <div>Logged in as: {user}</div>
       {/* <button onClick={getInformation}>Get information</button> */}
       <div className="home-Container">

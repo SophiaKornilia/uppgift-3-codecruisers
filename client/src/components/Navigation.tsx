@@ -9,14 +9,7 @@ export const Navigation = () => {
   return (
     <nav>
       <ul>
-        <li>
-          <NavLink
-            to="/"
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            <button>Home</button>
-          </NavLink>
-        </li>
+        
         {user ?  (
         <><li>
           <NavLink
@@ -36,6 +29,14 @@ export const Navigation = () => {
         </li><li><Logout /></li></>
         ) : (
         <>
+        <li>
+          <NavLink
+            to="/"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <button>Home</button>
+          </NavLink>
+        </li>
             <li>
           <NavLink
             to="/Admin"

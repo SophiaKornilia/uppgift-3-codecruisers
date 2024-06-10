@@ -14,27 +14,17 @@ export const getContent = async (
       database: process.env.DB_NAME,
     });
 
-
-    const [rows] = await connection.query(
-      'SELECT * FROM `books`'
-    );
-    
+    const [rows] = await connection.query("SELECT * FROM `books`");
 
     console.log(rows);
-    
-    
-  res.status(200).json(
-    {
-      books: rows
-    },
-  );
 
-  }catch (error){
+    res.status(200).json({
+      books: rows,
+    });
+  } catch (error) {
     console.error("Something is wrong", error);
   }
 };
- 
-
 
 export const getSubContent = async (
   req: Request,
@@ -42,8 +32,8 @@ export const getSubContent = async (
 ): Promise<void> => {
   // Hämta innehåll baserat på prenumerationsnivå
 
-  let {user} = req.body;
-  console.log("Logged in: " , user);
+  let { user } = req.body;
+  console.log("Logged in: ", user);
 
   const userEmail = user;
 
@@ -57,7 +47,7 @@ export const getSubContent = async (
     });
 
     console.log(userEmail);
-    
+
     const [rows] = await connection.query(
       `SELECT DISTINCT b.* 
        FROM books b 
@@ -66,25 +56,16 @@ export const getSubContent = async (
        WHERE u.email = ? AND s.endDate > NOW()`,
       [userEmail]
     );
-    
 
     console.log(rows);
-    
-    
-  res.status(200).json(
-    {
-      books: rows
-    },
-  );
 
-  }catch (error){
+    res.status(200).json({
+      books: rows,
+    });
+  } catch (error) {
     console.error("Something is wrong", error);
   }
 };
-
-
-
-
 
 export const getNoAccessSubContent = async (
   req: Request,
@@ -92,8 +73,8 @@ export const getNoAccessSubContent = async (
 ): Promise<void> => {
   // Hämta innehåll baserat på prenumerationsnivå
 
-  let {user} = req.body;
-  console.log("Logged in: " , user);
+  let { user } = req.body;
+  console.log("Logged in: ", user);
 
   const userEmail = user;
 
@@ -107,26 +88,26 @@ export const getNoAccessSubContent = async (
     });
 
     console.log(userEmail);
- 
+
     const [rows] = await connection.query(
-      "SELECT DISTINCT b.* FROM books b LEFT JOIN subscriptions s ON b.levelId >= s.levelId LEFT JOIN users u ON s.email = u.email WHERE u.email IS NULL OR (s.email = ? AND b.levelId > (SELECT levelId FROM subscriptions WHERE email = ?)) LIMIT 0, 25; ",
-      [userEmail, userEmail]
+      `SELECT DISTINCT b.* 
+       FROM books b 
+       LEFT JOIN subscriptions s ON s.email = ? 
+       WHERE s.levelId IS NULL 
+          OR b.levelId > COALESCE(s.levelId, 0) 
+       LIMIT 0, 25`,
+      [userEmail]
     );
 
     console.log(rows);
-    
-    
-  res.status(200).json(
-    {
-      unavailableBooks: rows
-    },
-  );
 
-  }catch (error){
+    res.status(200).json({
+      unavailableBooks: rows,
+    });
+  } catch (error) {
     console.error("Something is wrong", error);
   }
 };
-
 
 export const addContent = async (
   req: Request,
