@@ -16,6 +16,7 @@ const CheckoutButton: React.FC<CheckoutButtonProps> = ({
       console.error("User is not defined");
       return;
     }
+    console.log(subscriptionLevel);
 
     const response = await fetch(
       "http://localhost:3000/api/payments/checkout",
@@ -31,7 +32,9 @@ const CheckoutButton: React.FC<CheckoutButtonProps> = ({
 
     const data = await response.json();
     console.log(data);
-    localStorage.setItem("sessionId", JSON.stringify(data.id))
+    localStorage.setItem("sessionId", JSON.stringify(data.id));
+    localStorage.setItem("subscriptionLevel", JSON.stringify(subscriptionLevel));
+
 
     if (data.url) {
       window.location.href = data.url; // Redirect to Stripe checkout page

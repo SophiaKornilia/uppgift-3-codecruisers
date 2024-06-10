@@ -92,6 +92,10 @@ export const verifySession = async (
 
     const sessionId = req.body.sessionId;
     const userEmail = req.body.user;
+    const subLevel = req.body.subLevel;
+
+    console.log("Is it null?" , subLevel);
+
 
     if (!stripeApi) {
       console.error("Stripe is not defined!");
@@ -142,7 +146,7 @@ export const verifySession = async (
       //products: JSON.stringify(lineItems.data),
      // userId: session.customer_details,
       paymentStatus: "active",
-      levelId: 2,
+      levelId: subLevel,
       startDate: startDate,
       endDate: endDate, // Du kan fylla i det här baserat på din logik
       isActive: true, // Du kan fylla i det här baserat på din logik
@@ -176,10 +180,10 @@ export const webhooks = async (req: Request, res: Response): Promise<void> => {
 
   switch(req.body.type) {
     case "customer.subscription.updated":
-      console.log(req.body);
+      // //console.log(req.body);
       break;
     default:
-      console.log(req.body.type);
+      //console.log(req.body.type);
       break;
   }
 

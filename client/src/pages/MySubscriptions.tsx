@@ -29,7 +29,7 @@ export const MySubscriptions = () => {
     setLoggedinUser(user);
   }, [user]);
 
-  console.log("MySubscriptions", user, loggedinUser);
+  console.log("MySubscriptions", user, loggedinUser, selectedSubscription);
   // const url = "http://localhost:3000/api/users/getUser";
 
   // const getInformation = async () => {
