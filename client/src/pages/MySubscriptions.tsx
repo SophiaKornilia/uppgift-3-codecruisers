@@ -3,6 +3,7 @@ import { useUser } from "../context/UserContext";
 import { useLocation } from "react-router-dom";
 import CheckoutButton from "../components/CheckOutButton";
 import { EndSubscription } from "../components/EndSubscription";
+import SubscriptionDetails from "../components/SubscriptionDetails";
 
 export const MySubscriptions = () => {
   const { user } = useUser();
@@ -35,7 +36,8 @@ export const MySubscriptions = () => {
 
   return (
     <div>
-      <div><EndSubscription /> </div>
+      <SubscriptionDetails />
+      {/* <div><EndSubscription /> </div> */}
       <div>Logged in as: {user}</div>
       {/* <button onClick={getInformation}>Get information</button> */}
       <div className="home-Container">

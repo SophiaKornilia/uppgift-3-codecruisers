@@ -151,13 +151,16 @@ export const verifySession = async (
       email: userEmail,
       //products: JSON.stringify(lineItems.data),
      // userId: session.customer_details,
-      paymentStatus: "active",
+      paymentStatus: session.payment_status,
       levelId: subLevel,
       startDate: startDate,
       endDate: endDate, // Du kan fylla i det här baserat på din logik
+      stripeSubscriptionId: session.subscription,
       isActive: true, // Du kan fylla i det här baserat på din logik
     };
-
+     
+    console.log("session.sub", session.subscription);
+    
     await connection.query(
       "INSERT INTO subscriptions SET ?",
       [order]
@@ -176,19 +179,41 @@ export const retryPayment = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const db = await connectToDatabase();
-  // Hantera betalningsfel och försöka igen
-  const stripe = initStripe();
+  
+  const stripeApi = new Stripe(process.env.STRIPE_KEY as string);
+  //console.log(req.body);
+
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
+      
+
+  let session: Stripe.Checkout.Session | undefined;
+
+  // try {
+  //   session = await stripeApi.checkout.sessions.retrieve(subscription);
+  //   console.log(subscription);
+  // } catch (error) {
+  //   console.error("Error retrieving session:", error);
+  //   res.status(500).json({ error: "Internal server error" });
+  //   return;
+  // }
+
 
   // retrieve subscriptionId i stripe - ge mig subscription info -> "latest invoice" retrieve på latest invoice -> payment_link som vi loggar ut på samma sätt som första url
 };
 
 export const webhooks = async (req: Request, res: Response): Promise<void> => {
   
-
   switch(req.body.type) {
     case "customer.subscription.updated":
       console.log(req.body);
+      const { subscription } = req.body;
+      console.log(subscription, "subscription");
       //kolla subscription id i databas och kolla med subscription req.body.data.subscription
     
   // uppdatera databas med status (isActive) + paymentStatus 

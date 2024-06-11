@@ -1,9 +1,9 @@
 import { Router } from "express";
 import connectToDatabase from "../../services/databaseConnection";
-import { cancelSubscription, getSubscriptions, renewSubscription, upgradeSubscription } from "./subscriptions.controller";
+import { cancelSubscription, getSubscriptionId, renewSubscription, upgradeSubscription } from "./subscriptions.controller";
 const router = Router();
 
-router.get("/", getSubscriptions);
+router.get("/subscriptionId", getSubscriptionId);
 
 router.post("/upgrade", upgradeSubscription);
 

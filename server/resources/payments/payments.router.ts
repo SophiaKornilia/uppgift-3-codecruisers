@@ -11,8 +11,8 @@ router.post("/checkout", checkout);
 
 router.post("/verify-session", verifySession);
 
-router.post("/webhooks", webhooks);
+router.get("/webhooks", webhooks);
 
-router.post("/retry", retryPayment);
+router.get("/retry", retryPayment);
 
 export default router;
