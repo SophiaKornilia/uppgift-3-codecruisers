@@ -132,6 +132,11 @@ export const verifySession = async (
       return;
     }
 
+    // HÄMTA SUBSCRIPTION ID FRÅN PAYMENT_STATUS. LOGGA UT SESSION 
+    console.log("Session: ", session);
+
+    //spara subscription id i databas . i kolumn
+
     const lineItems = await stripeApi.checkout.sessions.listLineItems(
       sessionId
     );
@@ -174,6 +179,8 @@ export const retryPayment = async (
   const db = await connectToDatabase();
   // Hantera betalningsfel och försöka igen
   const stripe = initStripe();
+
+  // retrieve subscriptionId i stripe - ge mig subscription info -> "latest invoice" retrieve på latest invoice -> payment_link som vi loggar ut på samma sätt som första url
 };
 
 export const webhooks = async (req: Request, res: Response): Promise<void> => {
@@ -182,11 +189,15 @@ export const webhooks = async (req: Request, res: Response): Promise<void> => {
   switch(req.body.type) {
     case "customer.subscription.updated":
       console.log(req.body);
+      //kolla subscription id i databas och kolla med subscription req.body.data.subscription
+    
+  // uppdatera databas med status (isActive) + paymentStatus 
       break;
     default:
       console.log(req.body.type);
       break;
   }
+
 
   res.json({});
 };
