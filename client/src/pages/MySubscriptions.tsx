@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
 import { useLocation } from "react-router-dom";
 import CheckoutButton from "../components/CheckOutButton";
-import { EndSubscription } from "../components/EndSubscription";
+// import { EndSubscription } from "../components/EndSubscription";
 import SubscriptionDetails from "../components/SubscriptionDetails";
 
 export const MySubscriptions = () => {

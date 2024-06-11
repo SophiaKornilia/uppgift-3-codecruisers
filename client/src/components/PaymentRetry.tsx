@@ -8,6 +8,7 @@ interface PaymentRetryProps {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  console.log(subscriptionId);
   async function handleRetryPayment() {
     setLoading(true);
     setError('');
@@ -22,7 +23,7 @@ interface PaymentRetryProps {
 
       const data = await response.json();
       if (response.ok) {
-        window.location.href = data.url;
+        window.location.href = data;
       } else {
         setError('Failed to get payment link: ' + data.error);
       }

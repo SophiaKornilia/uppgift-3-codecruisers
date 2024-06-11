@@ -16,7 +16,7 @@ export const getContent = async (
 
     const [rows] = await connection.query("SELECT * FROM `books`");
 
-    console.log(rows);
+    // console.log(rows);
 
     res.status(200).json({
       books: rows,

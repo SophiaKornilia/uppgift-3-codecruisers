@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  cancel,
   checkout,
   retryPayment,
   verifySession,
@@ -11,8 +12,9 @@ router.post("/checkout", checkout);
 
 router.post("/verify-session", verifySession);
 
-router.get("/webhooks", webhooks);
+router.post("/cancel", cancel);
 
-router.get("/retry", retryPayment);
+router.post("/retry", retryPayment);
 
+router.post("/webhooks", webhooks);
 export default router;

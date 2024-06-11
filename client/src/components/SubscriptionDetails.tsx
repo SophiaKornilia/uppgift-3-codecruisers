@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import PaymentRetry from './PaymentRetry';
 import { useUser } from '../context/UserContext';
+import { EndSubscription } from './EndSubscription';
+// import { EndSubscription } from './EndSubscription';
 
 
 const SubscriptionDetails = () => {
@@ -13,7 +15,7 @@ const SubscriptionDetails = () => {
     // Här hämtar du prenumerationsinformationen för användaren
     async function fetchSubscription() {
       try {
-        const response = await fetch(`http://localhost:3000/api/subscriptions/subscriptionId?userEmail=${user}&isActive=false`,{
+        const response = await fetch(`http://localhost:3000/api/subscriptions/subscriptionId?userEmail=${user}&isActive=0`,{
         method: "GET",
         headers: {
             'Content-Type': 'application/json'
@@ -42,8 +44,13 @@ const SubscriptionDetails = () => {
           <p>Subscription ID: {subscriptionId}</p>
            <p>Status: {subscriptionStatus}</p> 
            {subscriptionStatus === 0 && (
-            <PaymentRetry subscriptionId={subscriptionId} />
+            <><PaymentRetry subscriptionId={subscriptionId} />
+            </>
           )} 
+          
+                      <EndSubscription subscriptionId={subscriptionId} />
+
+          
         </div>
       )}
     </div>

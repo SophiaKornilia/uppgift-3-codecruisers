@@ -4,18 +4,14 @@ import initStripe from "../../stripe";
 import { RowDataPacket } from "mysql2";
 import mysql from "mysql2/promise";
 import Stripe from "stripe";
+import { stat } from "fs";
 
 interface SubscriptionLevel extends RowDataPacket {
   stripePriceId: string;
 }
 
 export const checkout = async (req: Request, res: Response): Promise<void> => {
-  // const stripe = initStripe();
-
-  // if (!stripe) {
-  //   res.status(500).send({ error: "Stripe initialization failed" });
-  //   return;
-  // }
+  
   const { subscriptionLevel, user } = req.body;
 
   console.log("User: ", user);
@@ -181,8 +177,10 @@ export const retryPayment = async (
 ): Promise<void> => {
   
   const stripeApi = new Stripe(process.env.STRIPE_KEY as string);
-  //console.log(req.body);
+  //console.log("Req body", req.body);
 
+const { subscriptionId } = req.body;
+ 
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
@@ -192,37 +190,84 @@ export const retryPayment = async (
     });
       
 
-  let session: Stripe.Checkout.Session | undefined;
+  let subInfoStripe;
 
-  // try {
-  //   session = await stripeApi.checkout.sessions.retrieve(subscription);
-  //   console.log(subscription);
-  // } catch (error) {
-  //   console.error("Error retrieving session:", error);
-  //   res.status(500).json({ error: "Internal server error" });
-  //   return;
-  // }
+  try {
+    subInfoStripe = await stripeApi.subscriptions.retrieve(subscriptionId);
+    //console.log("1", subscriptionId, "2",subInfoStripe.latest_invoice);
+   
+    const latestInvoice = await stripeApi.invoices.retrieve(subInfoStripe.latest_invoice as string);
+    //console.log(latestInvoice.hosted_invoice_url);
+
+    res.status(200).json(latestInvoice.hosted_invoice_url);
+    } catch (error) {
+    console.error("Error retrieving session:", error);
+    res.status(500).json({ error: "Internal server error" });
+    return;
+  }
 
 
   // retrieve subscriptionId i stripe - ge mig subscription info -> "latest invoice" retrieve på latest invoice -> payment_link som vi loggar ut på samma sätt som första url
 };
 
+export const cancel = async (req: Request, res: Response): Promise<void> => {
+  
+  const stripeApi = new Stripe(process.env.STRIPE_KEY as string);
+  //console.log("Req body", req.body);
+
+const { subscriptionId } = req.body;
+ 
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
+      
+
+  let subInfoStripe;
+
+  try {
+    subInfoStripe = await stripeApi.subscriptions.retrieve(subscriptionId);
+    console.log("sub ID? ", subscriptionId, "Cancel at period end? ",subInfoStripe.cancel_at_period_end);
+   
+} catch {
+
+}}
+
 export const webhooks = async (req: Request, res: Response): Promise<void> => {
   
   switch(req.body.type) {
     case "customer.subscription.updated":
-      console.log(req.body);
-      const { subscription } = req.body;
-      console.log(subscription, "subscription");
+      console.log("webhooks req.body: ",req.body);
+      const subscription = req.body.data.object.id;
+      const status = req.body.data.object.status;
+      
+      console.log( "subscription1 ",subscription, "status: " ,status);
       //kolla subscription id i databas och kolla med subscription req.body.data.subscription
-    
+
+      const connection = await mysql.createConnection({
+        host: process.env.DB_HOST,
+        port: Number(process.env.DB_PORT),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+      });
+
+      if (status === "active"){
+      const [rows]: [mysql.RowDataPacket[], any] = await connection.query("UPDATE `subscriptions` SET `paymentStatus`='paid',`isActive`=1 WHERE `stripeSubscriptionId`= ?", [subscription]);
+      console.log("ACTIVE");
+    } else if (status === "past_due") {
+      const [rows]: [mysql.RowDataPacket[], any] = await connection.query("UPDATE `subscriptions` SET `paymentStatus`='unpaid',`isActive`=0 WHERE `stripeSubscriptionId`= ?", [subscription]);
+      console.log("PAST_DUE");  
+    }
   // uppdatera databas med status (isActive) + paymentStatus 
       break;
     default:
       console.log(req.body.type);
       break;
   }
-
 
   res.json({});
 };
