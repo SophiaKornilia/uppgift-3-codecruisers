@@ -231,7 +231,7 @@ const { subscriptionId } = req.body;
   try {
     subInfoStripe = await stripeApi.subscriptions.retrieve(subscriptionId);
     console.log("sub ID? ", subscriptionId, "Cancel at period end? ",subInfoStripe.cancel_at_period_end);
-   
+   //set cancel at period end till true 
 } catch {
 
 }}
@@ -261,7 +261,9 @@ export const webhooks = async (req: Request, res: Response): Promise<void> => {
     } else if (status === "past_due") {
       const [rows]: [mysql.RowDataPacket[], any] = await connection.query("UPDATE `subscriptions` SET `paymentStatus`='unpaid',`isActive`=0 WHERE `stripeSubscriptionId`= ?", [subscription]);
       console.log("PAST_DUE");  
-    }
+    } // lägg till en till status för cancelled - tex 
+
+    
   // uppdatera databas med status (isActive) + paymentStatus 
       break;
     default:
