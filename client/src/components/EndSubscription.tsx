@@ -7,10 +7,6 @@ interface CancelProps {
 export const EndSubscription: React.FC<CancelProps>  = ({ subscriptionId }) => {
    const [error, setError] = useState('');
    
-    //hämta användaren
-    //hämta sublevel och endDate'
-    //På enddate ska subscription deleteas
-    //gå in på stripe och ta bort nästa betalning
   console.log(subscriptionId);
 
     const handleClick = async() => {   
@@ -32,8 +28,7 @@ export const EndSubscription: React.FC<CancelProps>  = ({ subscriptionId }) => {
       }
     } catch (error) {
       setError('Error: ' + error);
-    } finally {
-    }
+    } 
     }
     
     return (
