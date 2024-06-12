@@ -57,7 +57,7 @@ export const getSubContent = async (
       [userEmail]
     );
 
-    console.log(rows);
+    // console.log(rows);
 
     res.status(200).json({
       books: rows,

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 export const Confirmation = () => {
     const { user } = useUser();
+    const navigate = useNavigate();
 
     const [verified, setVerified] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -58,10 +60,13 @@ export const Confirmation = () => {
                 }
             }
             verifySession()
+
+            setTimeout(() => {
+                navigate("myPage");
+              }, 4000);
         }
     }, [verified])
 
-
     return <>
-    {verified && !isLoading ? <h1>Tack för ditt köp</h1> : "Laddar..."}</>
+    {verified && !isLoading ? <h1>Thank you for your purchase</h1> : "Loading..."}</>
 }

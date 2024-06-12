@@ -10,6 +10,7 @@ import { SuccessfullyRegistered } from "./pages/SuccessfullyRegistered";
 import { SuccessfullyAddedBook } from "./pages/SuccessfullyAddedBook";
 import { Confirmation } from "./pages/Confirmation";
 import { AdminStatus } from "./pages/AdminStatus";
+import { SuccessfullyCancelled } from "./pages/SuccessfullyCancelled";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,9 @@ export const router = createBrowserRouter([
       {
         path: "/SuccessfullyAddedBook",
         element: <SuccessfullyAddedBook />,
+      },{
+        path: "/SuccessfullyCancelled",
+        element: <SuccessfullyCancelled />,
       },
       {
         path: "/Confirmation",

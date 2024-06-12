@@ -239,6 +239,7 @@ export const cancel = async (req: Request, res: Response): Promise<void> => {
     console.error("Error updating subscription: ", error);
     res.status(500).json({ error: error });
   } finally {
+    //console.log(req.body.data.object.status);
     await connection.end();
   }
 };
@@ -246,6 +247,7 @@ export const cancel = async (req: Request, res: Response): Promise<void> => {
 export const webhooks = async (req: Request, res: Response): Promise<void> => {
   switch (req.body.type) {
     case "customer.subscription.updated":
+      case 'customer.subscription.deleted':
       console.log("webhooks req.body: ", req.body);
       const subscription = req.body.data.object.id;
       const status = req.body.data.object.status;
@@ -273,6 +275,12 @@ export const webhooks = async (req: Request, res: Response): Promise<void> => {
           [subscription]
         );
         console.log("PAST_DUE");
+      } else if (status === "canceled") {
+        const [rows]: [mysql.RowDataPacket[], any] = await connection.query(
+          "UPDATE `subscriptions` SET `paymentStatus`='cancelled',`isActive`=0 WHERE `stripeSubscriptionId`= ?",
+          [subscription]
+        );
+        console.log("CANCELLED");
       } // lägg till en till status för cancelled - tex
 
       // uppdatera databas med status (isActive) + paymentStatus
@@ -281,6 +289,7 @@ export const webhooks = async (req: Request, res: Response): Promise<void> => {
       console.log(req.body.type);
       break;
   }
+
 
   res.json({});
 };
