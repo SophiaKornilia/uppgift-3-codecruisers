@@ -4,9 +4,10 @@
   padding: 20px;
 }
 
-h1,h2 {
+h1,
+h2 {
   text-align: center;
-  font-family: "MedievalSharp", cursive;
+  font-family: "Jaini", system-ui;
   color: white;
 }
 p {
@@ -34,4 +35,3 @@ p {
   color: #ffffff;
   cursor: pointer;
 }
-
