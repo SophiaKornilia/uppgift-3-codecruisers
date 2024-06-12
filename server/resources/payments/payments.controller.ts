@@ -5,13 +5,13 @@ import { RowDataPacket } from "mysql2";
 import mysql from "mysql2/promise";
 import Stripe from "stripe";
 import { stat } from "fs";
+import { cancelSubscription } from "../subscriptions/subscriptions.controller";
 
 interface SubscriptionLevel extends RowDataPacket {
   stripePriceId: string;
 }
 
 export const checkout = async (req: Request, res: Response): Promise<void> => {
-  
   const { subscriptionLevel, user } = req.body;
 
   console.log("User: ", user);
@@ -70,7 +70,6 @@ export const checkout = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-
 export const verifySession = async (
   req: Request,
   res: Response
@@ -91,8 +90,7 @@ export const verifySession = async (
     const userEmail = req.body.user;
     const subLevel = req.body.subLevel;
 
-    console.log("Is it null?" , subLevel);
-
+    console.log("Is it null?", subLevel);
 
     if (!stripeApi) {
       console.error("Stripe is not defined!");
@@ -128,7 +126,7 @@ export const verifySession = async (
       return;
     }
 
-    // HÄMTA SUBSCRIPTION ID FRÅN PAYMENT_STATUS. LOGGA UT SESSION 
+    // HÄMTA SUBSCRIPTION ID FRÅN PAYMENT_STATUS. LOGGA UT SESSION
     console.log("Session: ", session);
 
     //spara subscription id i databas . i kolumn
@@ -140,13 +138,12 @@ export const verifySession = async (
 
     const startDate = new Date();
     const endDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000); // Lägger till 7 dagar i millisekunder
-    
 
     const order = {
       price: session.amount_total,
       email: userEmail,
       //products: JSON.stringify(lineItems.data),
-     // userId: session.customer_details,
+      // userId: session.customer_details,
       paymentStatus: session.payment_status,
       levelId: subLevel,
       startDate: startDate,
@@ -154,13 +151,10 @@ export const verifySession = async (
       stripeSubscriptionId: session.subscription,
       isActive: true, // Du kan fylla i det här baserat på din logik
     };
-     
+
     console.log("session.sub", session.subscription);
-    
-    await connection.query(
-      "INSERT INTO subscriptions SET ?",
-      [order]
-    );
+
+    await connection.query("INSERT INTO subscriptions SET ?", [order]);
 
     console.log("Subscription inserted successfully");
     res.status(200).json({ verified: true });
@@ -170,80 +164,93 @@ export const verifySession = async (
   }
 };
 
-
 export const retryPayment = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  
   const stripeApi = new Stripe(process.env.STRIPE_KEY as string);
   //console.log("Req body", req.body);
 
-const { subscriptionId } = req.body;
- 
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-    });
-      
+  const { subscriptionId } = req.body;
+
+  const connection = await mysql.createConnection({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  });
 
   let subInfoStripe;
 
   try {
     subInfoStripe = await stripeApi.subscriptions.retrieve(subscriptionId);
     //console.log("1", subscriptionId, "2",subInfoStripe.latest_invoice);
-   
-    const latestInvoice = await stripeApi.invoices.retrieve(subInfoStripe.latest_invoice as string);
+
+    const latestInvoice = await stripeApi.invoices.retrieve(
+      subInfoStripe.latest_invoice as string
+    );
     //console.log(latestInvoice.hosted_invoice_url);
 
     res.status(200).json(latestInvoice.hosted_invoice_url);
-    } catch (error) {
+  } catch (error) {
     console.error("Error retrieving session:", error);
     res.status(500).json({ error: "Internal server error" });
     return;
   }
 
-
   // retrieve subscriptionId i stripe - ge mig subscription info -> "latest invoice" retrieve på latest invoice -> payment_link som vi loggar ut på samma sätt som första url
 };
 
 export const cancel = async (req: Request, res: Response): Promise<void> => {
-  
   const stripeApi = new Stripe(process.env.STRIPE_KEY as string);
   //console.log("Req body", req.body);
 
-const { subscriptionId } = req.body;
- 
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-    });
+  const { subscriptionId } = req.body;
 
-  let subInfoStripe;
+  const connection = await mysql.createConnection({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  });
 
   try {
-    subInfoStripe = await stripeApi.subscriptions.retrieve(subscriptionId);
-    console.log("sub ID? ", subscriptionId, "Cancel at period end? ",subInfoStripe.cancel_at_period_end);
-   //set cancel at period end till true 
-} catch {
-
-}}
+    const subInfoStripe = await stripeApi.subscriptions.retrieve(
+      subscriptionId
+    );
+    console.log(
+      "sub ID? ",
+      subscriptionId,
+      "Cancel at period end? ",
+      subInfoStripe.cancel_at_period_end
+    );
+    //set cancel at period end till true
+    const cancelSubscription = await stripeApi.subscriptions.update(
+      subscriptionId,
+      {
+        cancel_at_period_end: true,
+      }
+    );
+    console.log("Updated subscription: ", cancelSubscription);
+    res.status(200).json(cancelSubscription.cancel_at_period_end);
+  } catch (error) {
+    console.error("Error updating subscription: ", error);
+    res.status(500).json({ error: error });
+  } finally {
+    await connection.end();
+  }
+};
 
 export const webhooks = async (req: Request, res: Response): Promise<void> => {
-  
-  switch(req.body.type) {
+  switch (req.body.type) {
     case "customer.subscription.updated":
-      console.log("webhooks req.body: ",req.body);
+      console.log("webhooks req.body: ", req.body);
       const subscription = req.body.data.object.id;
       const status = req.body.data.object.status;
-      
-      console.log( "subscription1 ",subscription, "status: " ,status);
+
+      console.log("subscription1 ", subscription, "status: ", status);
       //kolla subscription id i databas och kolla med subscription req.body.data.subscription
 
       const connection = await mysql.createConnection({
@@ -254,16 +261,21 @@ export const webhooks = async (req: Request, res: Response): Promise<void> => {
         database: process.env.DB_NAME,
       });
 
-      if (status === "active"){
-      const [rows]: [mysql.RowDataPacket[], any] = await connection.query("UPDATE `subscriptions` SET `paymentStatus`='paid',`isActive`=1 WHERE `stripeSubscriptionId`= ?", [subscription]);
-      console.log("ACTIVE");
-    } else if (status === "past_due") {
-      const [rows]: [mysql.RowDataPacket[], any] = await connection.query("UPDATE `subscriptions` SET `paymentStatus`='unpaid',`isActive`=0 WHERE `stripeSubscriptionId`= ?", [subscription]);
-      console.log("PAST_DUE");  
-    } // lägg till en till status för cancelled - tex 
+      if (status === "active") {
+        const [rows]: [mysql.RowDataPacket[], any] = await connection.query(
+          "UPDATE `subscriptions` SET `paymentStatus`='paid',`isActive`=1 WHERE `stripeSubscriptionId`= ?",
+          [subscription]
+        );
+        console.log("ACTIVE");
+      } else if (status === "past_due") {
+        const [rows]: [mysql.RowDataPacket[], any] = await connection.query(
+          "UPDATE `subscriptions` SET `paymentStatus`='unpaid',`isActive`=0 WHERE `stripeSubscriptionId`= ?",
+          [subscription]
+        );
+        console.log("PAST_DUE");
+      } // lägg till en till status för cancelled - tex
 
-    
-  // uppdatera databas med status (isActive) + paymentStatus 
+      // uppdatera databas med status (isActive) + paymentStatus
       break;
     default:
       console.log(req.body.type);
