@@ -224,7 +224,6 @@ const { subscriptionId } = req.body;
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
     });
-      
 
   let subInfoStripe;
 
