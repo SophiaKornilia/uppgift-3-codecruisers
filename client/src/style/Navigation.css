@@ -1,13 +1,16 @@
 /* Navigation.css */
 
 nav {
-  background-color: #0291b5;
-  padding: 0;
+  background-color: var(--color-forest-dark);
+  padding: 0px 10px;
   width: 100%;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000; /* Håll navigationsbaren över andra element */
+  display: flex;
+  justify-content: space-between;
+  /* border: dotted 2px var(--color-forest-primary); */
 }
 
 nav ul {
@@ -28,7 +31,7 @@ nav ul li a {
 }
 
 nav ul li button {
-  background-color: #066886;
+  background-color: var(--color-forest-primary);
   color: white;
   border: none;
   padding: 0.5em 1em;
@@ -38,9 +41,10 @@ nav ul li button {
 }
 
 nav ul li button:hover {
-  background-color: #12213f;
+  background-color: var(--color-forest-leaf);
 }
 
 nav ul li .active button {
-  background-color: #11395e;
+  background-color: var(--color-forest-leaf);
 }
+

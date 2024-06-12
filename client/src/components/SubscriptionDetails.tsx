@@ -38,19 +38,18 @@ const SubscriptionDetails = () => {
 
   return (
     <div>
-      <h1>Subscription Details</h1>
+      <h2>Subscription Details</h2>
       {subscriptionId && (
         <div>
-          <p>Subscription ID: {subscriptionId}</p>
-           <p>Status: {subscriptionStatus}</p> 
+          {/* <p>Subscription ID: {subscriptionId}</p>
+           <p>Status: {subscriptionStatus}</p>  */}
            {subscriptionStatus === 0 && (
-            <><PaymentRetry subscriptionId={subscriptionId} />
+            <>
+              <h3>Your payment did not go through. Do you want to try again?</h3>
+              <PaymentRetry subscriptionId={subscriptionId} />
             </>
           )} 
-          
-                      <EndSubscription subscriptionId={subscriptionId} />
-
-          
+            <EndSubscription subscriptionId={subscriptionId} />
         </div>
       )}
     </div>

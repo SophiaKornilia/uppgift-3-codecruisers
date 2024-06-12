@@ -8,15 +8,20 @@ export const Navigation = () => {
 
   return (
     <nav>
+      {user ?  (
+        <>
       <ul>
-        
-        {user ?  (
-        <><li>
+        <li className="loggedInUser">
+        {user}
+        </li>
+        </ul>
+      <ul>
+        <li>
           <NavLink
             to="/MyPage"
             className={({ isActive }) => (isActive ? "active" : "")}
           >
-            <button>My Page</button>
+            <button>My Book Shelf</button>
           </NavLink>
         </li>
         <li>
@@ -24,11 +29,16 @@ export const Navigation = () => {
             to="/MySubscriptions"
             className={({ isActive }) => (isActive ? "active" : "")}
           >
-            <button>My Subscriptions</button>
+            <button>My Account</button>
           </NavLink>
-        </li><li><Logout /></li></>
-        ) : (
+        </li>
+        <li><Logout /></li>
+        </ul>
+        </>
+      ) : (
         <>
+        <ul></ul>
+        <ul>
         <li>
           <NavLink
             to="/"
@@ -61,31 +71,10 @@ export const Navigation = () => {
           >
             <button>Register</button>
           </NavLink>
-        </li>
+          </li>
+        </ul>
         </>
-        ) }
-        
-       
-       {/* Dessa tre länkar nedan räcker att de ligger i Router.tsx 
-        <li>
-          <NavLink
-            to="/SuccessfullyRegistered"
-            className={({ isActive }) => (isActive ? "active" : "")}
-          ></NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/SuccessfullyAddedBook"
-            className={({ isActive }) => (isActive ? "active" : "")}
-          ></NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/Confirmation"
-            className={({ isActive }) => (isActive ? "active" : "")}
-          ></NavLink>
-        </li>*/}
-      </ul>
+      )}
     </nav>
   );
 };

@@ -60,6 +60,7 @@ export const Login = () => {
   return (
     <div className="container">
       <div className="form-container">
+        <h2>Login</h2>
         <div>
           <label htmlFor="email">Email</label>
           <input

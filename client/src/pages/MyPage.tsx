@@ -12,7 +12,6 @@ export const MyPage = () => {
   const { user } = useUser();
 
   const [loggedinUser, setLoggedinUser] = useState<string | null>(null);
-  // const [userId, setUserId] = useState<string | null>(null);
   const [books, setBooks] = useState<IBook[]>([]);
   const [unavailableBooks, setUnavailableBooks] = useState<IBook[]>([]);
 
@@ -94,12 +93,7 @@ export const MyPage = () => {
   return (
     <div>
       <div>
-        <h2>My page</h2>
-        {user ? (
-          <h3>You are logged in as {user} </h3>
-        ) : (
-          <h3>Login to see my page</h3>
-        )}
+        <h2>My Book Shelf</h2>
       </div>
       {books.map((book) => (
         <div key={book.title}>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../style/Login.css"
 
 interface ILoginProps {
 	handleAdminStatus: (value: boolean) => void;
@@ -22,13 +23,15 @@ export const AdminLogin = ({ handleAdminStatus }: ILoginProps) => {
 
 
     return (
-		<div>
+		<div className="container">
+			      <div className="form-container">
+
 			{error && (
 				<div role="alert">
 					{error}
 				</div>
 			)}
-
+<h2>Admin login</h2>
 			<div>
 				<div>
 					<label htmlFor="adminUsername">
@@ -59,6 +62,7 @@ export const AdminLogin = ({ handleAdminStatus }: ILoginProps) => {
 				>
 					Login
 				</button>
+			</div>
 			</div>
 		</div>
 	);

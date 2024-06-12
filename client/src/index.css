@@ -1,33 +1,89 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "MedievalSharp", cursive;
+  font-weight: 400;
+  font-style: normal;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
   color: rgba(19, 18, 18, 0.87);
   background-color: #faf3f3;
+  
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+
+
+/* Färger */
+
+
+  /* Kompletterande färger */
+  --color-forest-dark: rgb(27, 59, 26); /* Dark forest green */
+  --color-forest-light: #A8D5BA; /* Light green */
+  --color-forest-bark: #4E342E; /* Bark brown */
+  --color-forest-leaf: #51704d; /* Leaf green */
+  --color-forest-sky: #A3C4E5; /* Sky blue */
+  --color-forest-moonlight: #C2C5BB; /* Moonlight gray */
+  --color-forest-sunlight: #FFD700; /* Sunlight yellow */
+  --color-forest-fog: #D3D3D3; /* Foggy gray */
+  --color-forest-mushroom: #E8D5C4; /* Mushroom beige */
+  --color-forest-bloom: #DB7093; /* Bloom pink */
+  --color-forest-berry: #8B0000; /* Berry red */
+
+
+/* Färger för magisk skog */
+--color-forest-primary: #235824; /* Forest green */
+--color-forest-secondary: #61855d; /* Moss green */
+--color-forest-accent: #5a8b52; /* Fern green */
+
+/* Övriga variabler */
+--font-family: "Dancing Script", cursive;
+--border-radius: 5px;
+
+font-family: "Dancing Script", cursive;
+font-optical-sizing: auto;
+font-weight: <weight>;
+font-style: normal;
+
 }
+
+/* .medievalsharp-regular {
+  font-family: "MedievalSharp", cursive;
+  font-weight: 400;
+  font-style: normal;
+} */
+
+/* #root {
+  margin: 50px;
+} */
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #066886;
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #072743;
 }
 
-body {
-  margin: 0;
+/* body {
+  margin-top: 60px;
   display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 70vh;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+} */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+background-color: var(--color-forest-accent);
+  background-image: url("./style/images/fantasy-8542630_1280.jpg");
+  /* background-size: cover; */
+  background-position: center;
 }
 
 h1 {
@@ -65,4 +121,25 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+
+
+header {
+  height: 60px; /* Ger plats för den fasta navigationsbaren */
+}
+
+main {
+  padding: 2em 1em;
+  margin-top: 0px; /* Gör plats för den fasta navigationsbaren */
+}
+
+footer {
+  background-color: var(--color-forest-dark);
+  color: white;
+  text-align: center;
+  padding:  0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }

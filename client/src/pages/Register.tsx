@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../style/Register.css";
+import "../style/Login.css";
 
 export const Register = () => {
   const url = "http://localhost:3000/api/users/register";
@@ -68,6 +68,7 @@ export const Register = () => {
     <div className="register-container">
       <div className="container">
         <div className="form-container">
+          <h2>Register</h2>
           <div>
             <label htmlFor="firstName">Name</label>
             <input
