@@ -16,7 +16,7 @@ export const AdminStatus = () => {
 
     return (
         <>{admin ? (
-			<><AdminGet /><Admin /><button onClick={() => handleAdminStatus(false)}>Logout</button>
+			<><AdminGet /><div><Admin /></div><button onClick={() => handleAdminStatus(false)}>Logout</button>
 			</>) : (
 				<AdminLogin handleAdminStatus={handleAdminStatus} />
 				)

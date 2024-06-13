@@ -42,7 +42,7 @@ export const MySubscriptions = () => {
   //Cancel my account btn
 
   return (
-    <div>
+    <div className="mypage">
       <SubscriptionDetails />
      
       <div className="home-Container">
