@@ -242,7 +242,7 @@ export const cancel = async (req: Request, res: Response): Promise<void> => {
 export const webhooks = async (req: Request, res: Response): Promise<void> => {
   switch (req.body.type) {
     case "customer.subscription.updated":
-      case 'customer.subscription.deleted':
+    case 'customer.subscription.deleted':
       console.log("webhooks req.body: ", req.body);
       const subscription = req.body.data.object.id;
       const status = req.body.data.object.status;
