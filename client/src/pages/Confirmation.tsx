@@ -62,7 +62,7 @@ export const Confirmation = () => {
             verifySession()
 
             setTimeout(() => {
-                navigate("myPage");
+                navigate("/myPage");
               }, 4000);
         }
     }, [verified])

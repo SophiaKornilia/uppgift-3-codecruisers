@@ -6,7 +6,7 @@ export const SuccessfullyCancelled = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      navigate("myPage");
+      navigate("/myPage");
     }, 3000);
   });
   return (

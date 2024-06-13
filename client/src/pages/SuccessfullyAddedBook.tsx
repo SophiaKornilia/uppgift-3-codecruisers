@@ -6,7 +6,7 @@ export const SuccessfullyAddedBook = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      navigate("admin");
+      navigate("/admin");
     }, 3000);
   });
   return (
