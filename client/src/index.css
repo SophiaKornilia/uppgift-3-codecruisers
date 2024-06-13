@@ -1,51 +1,45 @@
 :root {
-  font-family: "MedievalSharp", cursive;
+  font-family: "Jaini", system-ui;
   font-weight: 400;
   font-style: normal;
   line-height: 1.5;
   font-weight: 400;
   color: rgba(19, 18, 18, 0.87);
   background-color: #faf3f3;
-  
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
 
-
-/* Färger */
-
+  /* Färger */
 
   /* Kompletterande färger */
   --color-forest-dark: rgb(27, 59, 26); /* Dark forest green */
-  --color-forest-light: #A8D5BA; /* Light green */
-  --color-forest-bark: #4E342E; /* Bark brown */
+  --color-forest-light: #a8d5ba; /* Light green */
+  --color-forest-bark: #4e342e; /* Bark brown */
   --color-forest-leaf: #51704d; /* Leaf green */
-  --color-forest-sky: #A3C4E5; /* Sky blue */
-  --color-forest-moonlight: #C2C5BB; /* Moonlight gray */
-  --color-forest-sunlight: #FFD700; /* Sunlight yellow */
-  --color-forest-fog: #D3D3D3; /* Foggy gray */
-  --color-forest-mushroom: #E8D5C4; /* Mushroom beige */
-  --color-forest-bloom: #DB7093; /* Bloom pink */
-  --color-forest-berry: #8B0000; /* Berry red */
+  --color-forest-sky: #a3c4e5; /* Sky blue */
+  --color-forest-moonlight: #c2c5bb; /* Moonlight gray */
+  --color-forest-sunlight: #ffd700; /* Sunlight yellow */
+  --color-forest-fog: #d3d3d3; /* Foggy gray */
+  --color-forest-mushroom: #e8d5c4; /* Mushroom beige */
+  --color-forest-bloom: #db7093; /* Bloom pink */
+  --color-forest-berry: #8b0000; /* Berry red */
 
+  /* Färger för magisk skog */
+  --color-forest-primary: #235824; /* Forest green */
+  --color-forest-secondary: #61855d; /* Moss green */
+  --color-forest-accent: #5a8b52; /* Fern green */
 
-/* Färger för magisk skog */
---color-forest-primary: #235824; /* Forest green */
---color-forest-secondary: #61855d; /* Moss green */
---color-forest-accent: #5a8b52; /* Fern green */
+  /* Övriga variabler */
+  --font-family: "Dancing Script", cursive;
+  --border-radius: 5px;
 
-/* Övriga variabler */
---font-family: "Dancing Script", cursive;
---border-radius: 5px;
-
-font-family: "Dancing Script", cursive;
-font-optical-sizing: auto;
-font-weight: <weight>;
-font-style: normal;
-
+  font-family: "Dancing Script", cursive;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
 }
 
 /* .medievalsharp-regular {
@@ -79,8 +73,8 @@ a:hover {
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-background-color: var(--color-forest-accent);
+  font-family: "Jaini", system-ui;
+  background-color: var(--color-forest-accent);
   background-image: url("./style/images/fantasy-8542630_1280.jpg");
   /* background-size: cover; */
   background-position: center;
@@ -125,8 +119,6 @@ button:focus-visible {
   }
 }
 
-
-
 header {
   height: 60px; /* Ger plats för den fasta navigationsbaren */
 }
@@ -140,7 +132,7 @@ footer {
   background-color: var(--color-forest-dark);
   color: white;
   text-align: center;
-  padding:  0;
+  padding: 0;
   position: fixed;
   bottom: 0;
   width: 100%;

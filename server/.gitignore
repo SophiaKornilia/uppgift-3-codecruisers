@@ -2,4 +2,5 @@ node_modules
 .env
 docker-compose.yml
 docker.compose.yml
+docker-compose.yml
 .DS_Store
