@@ -76,7 +76,7 @@ body {
   font-family: "Jaini", system-ui;
   background-color: var(--color-forest-accent);
   background-image: url("./style/images/fantasy-8542630_1280.jpg");
-  /* background-size: cover; */
+  background-size: cover;
   background-position: center;
   background-attachment: fixed;
   position: relative;
