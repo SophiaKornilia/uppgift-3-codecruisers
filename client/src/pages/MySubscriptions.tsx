@@ -17,6 +17,7 @@ export const MySubscriptions = () => {
   >(null);
 
   const handleSubscriptionSelect = (subscriptionLevel: number | null) => {
+    console.log("Selected subscription level:", subscriptionLevel);
     setSelectedSubscription(subscriptionLevel);
   };
 
@@ -45,7 +46,7 @@ export const MySubscriptions = () => {
       <SubscriptionDetails />
      
       <div className="home-Container">
-        <h2>Choose your subsciptionlevel</h2>
+        <h2>Choose your subscription level</h2>
         {fromLink && (
           <p>
             You arrived here via a link! To read that book you clicked on,
