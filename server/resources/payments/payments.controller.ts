@@ -1,11 +1,9 @@
 import connectToDatabase from "../../services/databaseConnection";
 import { Request, Response } from "express";
-import initStripe from "../../stripe";
 import { RowDataPacket } from "mysql2";
 import mysql from "mysql2/promise";
 import Stripe from "stripe";
-import { stat } from "fs";
-import { cancelSubscription } from "../subscriptions/subscriptions.controller";
+
 
 interface SubscriptionLevel extends RowDataPacket {
   stripePriceId: string;
@@ -38,9 +36,6 @@ export const checkout = async (req: Request, res: Response): Promise<void> => {
   }
 
   const { stripePriceId } = rows[0];
-
-  // console.log(price, "kr");
-  console.log("Stripe Product ID: ", stripePriceId);
 
   //länka produkterna i databasen till ett id i stripe
   try {
