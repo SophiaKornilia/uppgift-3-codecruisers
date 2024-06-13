@@ -1,4 +1,3 @@
-import connectToDatabase from "../../services/databaseConnection";
 import { Request, Response } from "express";
 import { RowDataPacket } from "mysql2";
 import mysql from "mysql2/promise";
@@ -7,6 +6,11 @@ import Stripe from "stripe";
 
 interface SubscriptionLevel extends RowDataPacket {
   stripePriceId: string;
+}
+
+interface UserInterface extends RowDataPacket {
+  email: string;
+  stripeSubscriptionId: string;
 }
 
 export const checkout = async (req: Request, res: Response): Promise<void> => {
@@ -24,6 +28,35 @@ export const checkout = async (req: Request, res: Response): Promise<void> => {
   });
 
   console.log("Connected");
+
+  // kolla med en connection.query om emailen finns i subscription
+  const [subscriptionRows]: [UserInterface[], any] = await connection.query(
+  'SELECT * FROM `subscriptions` WHERE email = ?', [user]);
+
+  
+    // if den finns, radera subscription ur databas och gör en cancel till stripe
+    if(subscriptionRows.length === 1){
+      //radera raden i databasen 
+      await connection.query(
+        'DELETE FROM `subscriptions` WHERE email = ?',
+        [user]
+      );
+      //radera ur stripe
+      const stripeApi = new Stripe(process.env.STRIPE_KEY as string);
+
+      const stripeSubscriptionId = subscriptionRows[0].stripeSubscriptionId;
+
+      try {
+        const deletedSubscription = await stripeApi.subscriptions.cancel(stripeSubscriptionId);
+        console.log(`Deleted subscription from Stripe: ${stripeSubscriptionId}`);
+      } catch (error) {
+        console.error(`Failed to delete subscription from Stripe: ${stripeSubscriptionId}`, error);
+      }
+      // res.status(200).send({ message: "Subscription deleted" });
+    
+  
+    }
+  // gå ur if satsen, fortsätt med existerande kod:
 
   // Genomför betalning via Stripe
   const [rows]: [SubscriptionLevel[], any] = await connection.query(
