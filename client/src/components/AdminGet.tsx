@@ -37,12 +37,12 @@ export const AdminGet = () => {
   }, []); 
 
   return (
-    <div>
+    <div className="mypage">
      
       <h2>Book List</h2>
       <ul>
         {books.map((book) => (
-          <li key={book.bookId}>
+          <li key={book.bookId} className="content">
             <h3>{book.title}</h3>
             <p>Author: {book.author}</p>
             <p>{book.text}</p>

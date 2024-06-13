@@ -11,7 +11,7 @@ export const AdminLogin = ({ handleAdminStatus }: ILoginProps) => {
 	const [error, setError] = useState("");
 
     const handleLogin = () => {
-		if (username === "admin" && password === "admin") {
+		if (username === "nelson@gmail.com" && password === "123456") {
 			setError("");
 			handleAdminStatus(true);
 		} else {

@@ -55,3 +55,6 @@ body, html {
     width: 300px;
   }
   
+  .form-container {h2, label, p, div { color: black;}
+   
+  }

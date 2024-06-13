@@ -91,12 +91,12 @@ export const MyPage = () => {
   }, [loggedinUser]);
 
   return (
-    <div>
+    <div className="mypage">
       <div>
         <h2>My Book Shelf</h2>
       </div>
       {books.map((book) => (
-        <div key={book.title}>
+        <div key={book.title} className="content">
           <h3>{book.title}</h3>
           <h4>{book.author}</h4>
           <p>{book.text}</p>
